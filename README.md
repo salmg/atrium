@@ -1,7 +1,5 @@
 # ATRIUM: Payment Security Workbench
 
-[![tests](https://github.com/salmg/elma-pentest/actions/workflows/tests.yml/badge.svg)](https://github.com/salmg/elma-pentest/actions/workflows/tests.yml)
-
 A research toolkit for security experts working on **EMV payment systems**.  It
 sits in the middle of a payment and can read, decode, record and rewrite what
 crosses, at two different layers, over two different interfaces.
