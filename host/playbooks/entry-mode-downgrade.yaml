@@ -1,0 +1,19 @@
+# Entry-mode downgrade — fallback abuse.
+#
+# DE22 tells the host how the card was read. Claiming a magnetic-stripe
+# fallback on a transaction that still carries full ICC data tests whether the
+# host applies the weaker fallback rules while chip data is present, and
+# whether it notices the contradiction between the two.
+#
+# 05x = chip read, 80x = fallback to stripe after a chip failure.
+name: entry-mode-downgrade
+description: Claim a magnetic-stripe fallback while DE55 still carries ICC data.
+enabled: true
+
+field_mutations:
+  - de: 22
+    mode: replace
+    value: "801"
+    direction: acquirer->issuer
+    on_mti: ["0100", "0200"]
+    comment: "DE22 -> fallback, contradicting the ICC data in DE55"

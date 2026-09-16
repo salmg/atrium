@@ -1,0 +1,1811 @@
+<title>Semantic Divergence in EMV</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Tinos:ital,wght@0,400;0,700;1,400;1,700&display=swap">
+
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   Standard two-column research paper.
+
+   Type is the Croscore metric-compatible trio, so the page sets to
+   the same measure a Times / Helvetica / Courier manuscript does:
+     Tinos        → Times New Roman metrics   (body, headings, title)
+     Arimo        → Arial / Helvetica metrics (figure and table labels)
+     Courier Prime→ Courier metrics           (code, hex, identifiers)
+
+   Colour is achromatic by default — a paper is black on white. Two
+   hues are reserved and carry meaning wherever they appear: a navy
+   for the mechanism under discussion, a dark red for the divergence
+   the whole report is about.
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+  --desk:        #C9CBCD;
+  --sheet:       #FFFFFF;
+  --ink:         #000000;
+  --muted:       #3A3A3A;
+  --faint:       #6E6E6E;
+  --rule:        #000000;
+  --rule-soft:   #BFBFBF;
+  --accent:      #2E77B5;
+  --accent-soft: #E9F2FA;
+  --flag:        #0E3F6B;
+  --flag-soft:   #DFEAF4;
+  --code-bg:     #F5F5F3;
+  --shadow:      0 1px 3px rgba(0,0,0,.18), 0 10px 34px rgba(0,0,0,.16);
+
+  --serif: "Tinos", "Times New Roman", Times, serif;
+  --sans:  "Arimo", Arial, Helvetica, sans-serif;
+  --mono:  "Courier Prime", "Courier New", Courier, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --desk:        #0E1012;
+    --sheet:       #17191C;
+    --ink:         #EAE8E5;
+    --muted:       #B4B0AB;
+    --faint:       #8A8681;
+    --rule:        #EAE8E5;
+    --rule-soft:   #3A3D41;
+    --accent:      #79B4E8;
+    --accent-soft: #16242F;
+    --flag:        #B9D4F0;
+    --flag-soft:   #1B2A3A;
+    --code-bg:     #101215;
+    --shadow:      0 1px 3px rgba(0,0,0,.5), 0 16px 44px rgba(0,0,0,.5);
+  }
+}
+
+:root[data-theme="dark"] {
+  --desk:        #0E1012;
+  --sheet:       #17191C;
+  --ink:         #EAE8E5;
+  --muted:       #B4B0AB;
+  --faint:       #8A8681;
+  --rule:        #EAE8E5;
+  --rule-soft:   #3A3D41;
+  --accent:      #79B4E8;
+  --accent-soft: #16242F;
+  --flag:        #B9D4F0;
+  --flag-soft:   #1B2A3A;
+  --code-bg:     #101215;
+  --shadow:      0 1px 3px rgba(0,0,0,.5), 0 16px 44px rgba(0,0,0,.5);
+}
+
+/* ── Page ─────────────────────────────────────────────────── */
+body {
+  background: var(--desk);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 1.4;
+  margin: 0;
+  padding: 30px 16px 80px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.sheet {
+  background: var(--sheet);
+  max-width: 940px;
+  margin: 0 auto;
+  padding: 58px 64px 60px;
+  box-shadow: var(--shadow);
+}
+
+/* ── Preprint line ────────────────────────────────────────── */
+.masthead {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  justify-content: center;
+  font-family: var(--sans);
+  font-size: 10.5px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--faint);
+  padding-bottom: 26px;
+}
+.masthead strong { color: var(--faint); font-weight: 700; }
+
+/* ── Title block: centred, as a manuscript sets it ────────── */
+.titleblock { text-align: center; padding-bottom: 4px; }
+h1 {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 27px;
+  line-height: 1.2;
+  margin: 0 0 8px;
+  text-wrap: balance;
+}
+.subtitle {
+  font-family: var(--serif);
+  font-size: 16.5px;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--ink);
+  margin: 0 auto 20px;
+  max-width: 46ch;
+  text-align: center;
+  text-wrap: balance;
+}
+.byline {
+  font-family: var(--serif);
+  font-size: 15px;
+  display: block;
+  line-height: 1.45;
+}
+.byline > div { display: block; }
+.byline .affil { color: var(--muted); font-size: 13.5px; font-style: italic; }
+.byline a { color: var(--accent); text-decoration: none; }
+.byline a:hover { text-decoration: underline; }
+
+/* ── Abstract: ruled block, bold run-in ───────────────────── */
+.abstract {
+  margin: 26px 0 0;
+  padding: 14px 30px 16px;
+  border-top: 1.2px solid var(--rule);
+  border-bottom: 1.2px solid var(--rule);
+}
+.abstract h2 { display: none; }
+.abstract p {
+  margin: 0 0 8px;
+  font-size: 14px;
+  line-height: 1.42;
+  text-align: justify;
+  hyphens: auto;
+}
+.abstract p:last-child { margin-bottom: 0; }
+.abstract p:first-of-type::before {
+  content: "Abstract—";
+  font-weight: 700;
+  font-style: italic;
+}
+
+.keywords {
+  font-size: 14px;
+  margin: 12px 0 0;
+  padding: 0 30px;
+  text-align: justify;
+  hyphens: auto;
+}
+.keywords span {
+  font-weight: 700;
+  font-style: italic;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 14px;
+  color: var(--ink);
+}
+
+/* ── Title-page footnote ──────────────────────────────────── */
+.notice {
+  margin: 30px 30px 0;
+  padding: 8px 0 0;
+  border: 0;
+  border-top: 1px solid var(--rule-soft);
+  background: none;
+  font-family: var(--serif);
+  font-size: 12.5px;
+  line-height: 1.4;
+  text-align: justify;
+  hyphens: auto;
+  color: var(--muted);
+}
+.notice b {
+  color: var(--ink);
+  font-style: italic;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: 12.5px;
+}
+
+/* ── Sections ─────────────────────────────────────────────── */
+section { margin-top: 26px; }
+
+h2 {
+  font-family: var(--serif);
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  margin: 0 0 10px;
+  padding: 0;
+  border: 0;
+  color: var(--ink);
+}
+h2 .num { margin-right: .55em; font-variant-numeric: lining-nums; }
+
+.cols {
+  columns: 2;
+  column-gap: 28px;
+  column-rule: none;
+}
+.cols > * { break-inside: avoid-column; }
+.cols p, .cols li { break-inside: auto; }
+
+p {
+  margin: 0 0 9px;
+  text-align: justify;
+  hyphens: auto;
+  orphans: 2;
+  widows: 2;
+}
+.cols p { font-size: 15.2px; line-height: 1.42; }
+
+h3 {
+  font-family: var(--serif);
+  font-size: 15.2px;
+  font-weight: 700;
+  font-style: italic;
+  letter-spacing: 0;
+  color: var(--ink);
+  margin: 14px 0 6px;
+  break-after: avoid-column;
+}
+h3:first-child { margin-top: 0; }
+
+h4 {
+  font-family: var(--serif);
+  font-size: 15.2px;
+  font-style: italic;
+  font-weight: 400;
+  margin: 11px 0 4px;
+  color: var(--ink);
+}
+
+ul, ol { margin: 0 0 9px; padding-left: 19px; }
+li { margin-bottom: 5px; font-size: 15.2px; line-height: 1.4; text-align: justify; hyphens: auto; }
+.tight li { margin-bottom: 3px; }
+
+code, .m {
+  font-family: var(--mono);
+  font-size: .82em;
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  word-break: break-word;
+}
+b, strong { font-weight: 700; }
+em { font-style: italic; }
+a { color: var(--accent); }
+
+.lead-in {
+  font-family: var(--serif);
+  font-size: 15.2px;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--ink);
+}
+
+/* ── Contribution list ────────────────────────────────────── */
+.contrib { list-style: none; padding: 0; margin: 0 0 9px; }
+.contrib li {
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  gap: 8px;
+  margin-bottom: 7px;
+  break-inside: avoid;
+}
+.contrib .tag {
+  font-family: var(--serif);
+  font-size: 15.2px;
+  font-weight: 700;
+  font-style: italic;
+  color: var(--ink);
+  background: none;
+  border: 0;
+  text-align: left;
+  padding: 0;
+  height: fit-content;
+  letter-spacing: 0;
+}
+
+/* ── Wide blocks ──────────────────────────────────────────── */
+.span { column-span: all; margin: 16px 0; }
+
+figure { margin: 0; }
+figure svg { max-width: 100%; height: auto; display: block; margin: 0 auto; color: var(--ink); }
+figcaption {
+  font-family: var(--serif);
+  font-size: 12.8px;
+  line-height: 1.38;
+  color: var(--ink);
+  margin-top: 9px;
+  padding-top: 0;
+  border-top: 0;
+  text-align: justify;
+  hyphens: auto;
+}
+figcaption b {
+  color: var(--ink);
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: 12.8px;
+}
+
+/* ── Diagram system ───────────────────────────────────────── */
+figure svg text { font-family: var(--sans); fill: var(--ink); }
+figure svg text.mono { font-family: var(--mono); font-weight: 700; letter-spacing: -.01em; }
+
+figure svg .node      { fill: none; stroke: currentColor; stroke-width: 1.2; }
+figure svg .node-soft { fill: none; stroke: currentColor; stroke-width: 1; }
+figure svg .node-key  { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.4; }
+figure svg .node-flag { fill: var(--flag-soft); stroke: var(--flag); stroke-width: 1.4; }
+figure svg .frame     { fill: none; stroke: currentColor; stroke-width: 1.1; opacity: .45; }
+
+figure svg .wire       { fill: none; stroke: currentColor; stroke-width: 1.2; }
+figure svg .wire-key   { fill: none; stroke: var(--accent); stroke-width: 1.3; }
+figure svg .wire-flag  { fill: none; stroke: var(--flag); stroke-width: 1.3; }
+figure svg .wire-dash  { fill: none; stroke: currentColor; stroke-width: 1.05; stroke-dasharray: 5 4; opacity: .8; }
+figure svg .wire-dash-key  { fill: none; stroke: var(--accent); stroke-width: 1.1; stroke-dasharray: 5 4; }
+figure svg .wire-dash-flag { fill: none; stroke: var(--flag);   stroke-width: 1.1; stroke-dasharray: 5 4; }
+figure svg .rule { stroke: currentColor; opacity: .3; }
+
+figure svg .fill-ink   { fill: var(--ink); }
+figure svg .fill-key   { fill: var(--accent); }
+figure svg .fill-flag  { fill: var(--flag); }
+figure svg .badge      { fill: var(--sheet); stroke: var(--ink); stroke-width: 1.1; }
+
+figure svg .t-key   { fill: var(--accent); }
+figure svg .t-flag  { fill: var(--flag); }
+figure svg .t-mut   { fill: var(--muted); }
+figure svg .t-faint { fill: var(--faint); }
+
+figure svg .eyebrow { font-size: 11.5px; font-weight: 700; letter-spacing: .1em; fill: var(--faint); }
+figure svg .title   { font-size: 13.5px; font-weight: 700; }
+figure svg .sub     { font-size: 11.5px; fill: var(--muted); }
+figure svg .lbl     { font-size: 12px; }
+figure svg .data    { font-size: 11.5px; }
+figure svg .num     { font-size: 11.5px; font-weight: 700; fill: var(--ink); }
+
+/* ── Tables: booktabs rules, label above ──────────────────── */
+.tablewrap { overflow-x: auto; }
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-family: var(--serif);
+  font-size: 12.6px;
+  line-height: 1.34;
+}
+caption {
+  font-family: var(--serif);
+  text-align: center;
+  padding-bottom: 7px;
+  color: var(--ink);
+}
+caption .tbl-label {
+  display: block;
+  font-size: 12.4px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+caption .tbl-title {
+  display: block;
+  font-size: 12.4px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  font-weight: 400;
+  padding-top: 2px;
+}
+caption .cap-sub {
+  display: block;
+  font-size: 12.2px;
+  letter-spacing: 0;
+  text-transform: none;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--muted);
+  padding-top: 5px;
+  text-align: justify;
+}
+th {
+  text-align: left;
+  font-weight: 700;
+  color: var(--ink);
+  border-top: 1.4px solid var(--rule);
+  border-bottom: .8px solid var(--rule);
+  padding: 5px 9px 4px 0;
+  vertical-align: bottom;
+}
+td {
+  padding: 4px 9px 4px 0;
+  border-bottom: 0;
+  vertical-align: top;
+  color: var(--ink);
+}
+tbody tr:last-child td { border-bottom: 1.4px solid var(--rule); }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; padding-right: 12px; }
+td .m { background: none; padding: 0; font-size: 11.6px; }
+.yes { font-weight: 700; }
+.no  { color: var(--ink); }
+.part { font-style: italic; }
+
+/* ── Listings ─────────────────────────────────────────────── */
+.listing { margin: 16px 0; }
+.listing .lst-title {
+  font-family: var(--serif);
+  font-size: 12.4px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 6px;
+  text-align: center;
+}
+.listing .lst-title span {
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--ink);
+  font-size: 12.4px;
+}
+pre {
+  font-family: var(--mono);
+  font-size: 11.4px;
+  line-height: 1.45;
+  background: var(--code-bg);
+  border: .8px solid var(--rule-soft);
+  border-left-width: .8px;
+  margin: 0;
+  padding: 9px 11px;
+  overflow-x: auto;
+  color: var(--ink);
+  tab-size: 2;
+}
+pre .c { color: var(--faint); }
+pre .k { color: var(--ink); font-weight: 700; }
+pre .f { color: var(--flag); }
+
+/* ── Callout ──────────────────────────────────────────────── */
+.callout {
+  border: 0;
+  border-top: .8px solid var(--rule);
+  border-bottom: .8px solid var(--rule);
+  padding: 10px 0 11px;
+  margin: 14px 0;
+  background: none;
+}
+.callout .co-head {
+  font-family: var(--serif);
+  font-size: 12.4px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 5px;
+}
+.callout p:last-child { margin-bottom: 0; }
+.callout p { font-size: 14.6px; font-style: italic; }
+
+/* ── References ───────────────────────────────────────────── */
+.refs { columns: 2; column-gap: 28px; }
+.refs ol { padding-left: 21px; margin: 0; }
+.refs li { font-size: 12.6px; line-height: 1.36; margin-bottom: 6px; text-align: left; }
+
+/* ── Colophon ─────────────────────────────────────────────── */
+.colophon {
+  margin-top: 30px;
+  padding-top: 9px;
+  border-top: .8px solid var(--rule);
+  font-family: var(--serif);
+  font-size: 11.6px;
+  font-style: italic;
+  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  justify-content: center;
+  text-align: center;
+}
+
+/* ── Narrow screens ───────────────────────────────────────── */
+@media (max-width: 760px) {
+  body { padding: 12px 6px 50px; }
+  .sheet { padding: 28px 20px 36px; }
+  .cols, .abstract, .refs { columns: 1; }
+  .abstract, .keywords, .notice { padding-left: 0; padding-right: 0; margin-left: 0; margin-right: 0; }
+  h1 { font-size: 23px; }
+  .subtitle { font-size: 15px; }
+}
+
+/* ── Print ────────────────────────────────────────────────── */
+@media print {
+  :root {
+    --desk: #FFFFFF; --sheet: #FFFFFF; --ink: #000000; --muted: #2A2A2A;
+    --faint: #555555; --rule: #000000; --rule-soft: #AAAAAA;
+    --accent: #2E77B5; --accent-soft: #EDF4FA; --flag: #0E3F6B;
+    --flag-soft: #E4EEF7; --code-bg: #F6F6F4; --shadow: none;
+  }
+  @page { size: A4; margin: 17mm; }
+  body { padding: 0; font-size: 9.4pt; }
+  .sheet { box-shadow: none; padding: 0; max-width: none; }
+  .cols p, .cols li { font-size: 9.2pt; }
+  section { break-inside: auto; }
+  figure, table, pre { break-inside: avoid; }
+
+  /* A scrollbar cannot be scrolled on paper. Anything that would have
+     scrolled has to wrap instead, or it is simply lost at the trim. */
+  pre {
+    overflow: visible;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    font-size: 7.6pt;
+  }
+  .tablewrap { overflow: visible; }
+  table { table-layout: fixed; word-break: normal; overflow-wrap: break-word; }
+  figure svg { max-width: 100%; height: auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+</style>
+
+<div class="sheet">
+
+  <header class="masthead">
+    <div>ATRIUM Technical Report AT&#8209;2026&#8209;01</div>
+    <div>Preprint &nbsp;·&nbsp; 23 August 2026</div>
+    <div>Revision <span class="m">69e3f1e</span></div>
+  </header>
+
+  <div class="titleblock">
+    <h1>Detecting Semantic Divergence Across Payment Layers</h1>
+    <p class="subtitle">Cross-layer, message-level fault injection for EMV cards, terminals, communication links and authorisation hosts</p>
+    <div class="byline">
+      <div><b>Salvador Mendoza</b> <span class="affil">— ATRIUM Project</span></div>
+      <div class="affil">Artifact: <a href="https://github.com/salmg/elma-pentest">github.com/salmg/elma-pentest</a></div>
+    </div>
+  </div>
+
+  <div class="abstract">
+    <h2>Abstract</h2>
+    <p>Two decades of published attacks on chip payments — PIN bypass, pre-play, contactless CVM downgrade, brand mix-up — share a structure that the tooling built to find them does not reflect: in every case the cryptography held, and what failed was <em>agreement</em>. The card, the terminal and the issuer completed one transaction while holding different beliefs about an authenticated quantity, so the exploitable defect lies in the seam between layers rather than inside any one of them. Testing for such divergence needs an instrument that holds both sides of a seam at once, and existing tools do not: each is bounded by a single protocol layer, treats its target's quirks as code rather than data, and begins every engagement with no memory of the last. This report presents ATRIUM, a message-level fault-injection platform that places a mutating observer at the card–terminal boundary and a second at the acquirer–issuer boundary, joined through one BER&#8209;TLV semantic core spanning both — because ISO 8583 field 55 carries exactly the ICC data a card emits. Four properties are identified and implemented: <b>(i)</b> protocol-faithful mutation, in which transport invariants are re-established after every semantic edit so the device under test reacts to the changed meaning rather than to a malformed frame; <b>(ii)</b> declarative target modelling, in which a switch dialect, an attack, and even the data a cryptogram covers are files rather than code; <b>(iii)</b> a cross-layer consistency check that compares the quantity a switch routes on against the copy the cryptogram covers, and by deriving the card's keys determines which copy was signed; and <b>(iv)</b> a fingerprint-keyed, PAN-free evidence store that makes each session's outcomes reusable by later sessions and other cards. The host half is an escalation ladder — observe, rewrite, originate, verify — in which each rung surrenders a safety property the one below it holds, and the same transport abstraction carries the card half onto the contactless interface. The contact relay runs on SimTrace2, extended here with a T=1 block layer and an in-flight rewrite of the card's answer-to-reset so that it carries a complete EMV transaction on hardware — the same fidelity principle applied one layer below the APDUs. The artifact is 28,905 lines of Python validated by 787 automated tests; empirical evaluation against a card, terminal and host population under authorised engagement is stated as future work rather than claimed here.</p>
+  </div>
+
+  <p class="keywords"><span>Index terms —</span> EMV, ISO 8583, smart cards, message-level fault injection, man-in-the-middle, protocol testing, payment security, DE55, TLV, LLM agents.</p>
+
+  <div class="notice">
+    <b>Authorised use only.</b> &nbsp;ATRIUM is a research instrument for cards, terminals and host links that the operator owns or has written permission to test. Nothing in this report describes a technique for obtaining value from a payment instrument, and the platform ships no scheme-confidential interface specification. See §11.
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <section>
+    <h2><span class="num">1</span>Introduction</h2>
+    <div class="cols">
+      <p>A chip payment is a negotiation among parties who do not trust each other and cannot see each other. The card holds keys and a policy; the terminal holds the merchant's risk appetite and the cardholder's physical presence; the issuer holds the account and the final word. The protocols that connect them — EMV over ISO/IEC 7816 on the contact interface, ISO 8583 across the acquiring network — exist to make those three parties agree on one description of one transaction, and then to bind that description cryptographically.</p>
+
+      <p>The published record of attacks on this system is remarkably consistent about where it breaks. The 2010 PIN-bypass attack against Chip&nbsp;and&nbsp;PIN did not recover a key: it let the terminal believe a PIN had been verified while the card believed no cardholder verification had occurred, and the issuer received an authorisation whose cryptogram was silent on the difference [1]. Pre-play attacks exploited a terminal's unpredictable number being predictable, so a cryptogram computed today authenticated a transaction tomorrow [2,&nbsp;3]. The 2021 contactless PIN bypass rewrote a single terminal-facing flag so the terminal skipped verification the card still considered mandatory [4]. The card-brand mix-up attack ran one scheme's kernel against another scheme's card, so each party applied rules the other had not agreed to [5]. Currency and amount manipulation on contactless produced authorisations for values the cardholder never saw [6].</p>
+
+      <p>In each case the primitives held. What failed was that two participants finished the transaction holding <em>different beliefs about the same authenticated quantity</em>, and the mechanism intended to bind those beliefs — the application cryptogram — covered only one copy. We call this a <b>semantic divergence</b>. It accounts for a large share of the published attacks on deployed payment systems, which are otherwise easy to read as unrelated bugs.</p>
+
+      <p>The instruments available for finding divergence do not match its shape. A logic-level sniffer sees the card–terminal exchange but has nothing to say about what the acquirer forwards. A host test harness speaks ISO 8583 to a switch but has never seen the card that produced the field it carries. A grammar fuzzer will happily corrupt a length prefix, which tells you how a parser handles garbage but nothing about how a policy engine handles a well-formed lie. And every one of them starts each engagement with an empty notebook: what a card did last month, or what a similar card did on another operator's bench, is not available to inform what to try next.</p>
+
+      <h3>1.1 &nbsp;Thesis</h3>
+      <p>The claim is this:</p>
+
+      <div class="callout">
+        <div class="co-head">Thesis</div>
+        <p>Payment-system security testing should be organised around <em>agreement between layers</em> as the property under test. An instrument that can test for it needs four properties at once — protocol-faithful mutation, declarative target modelling, a shared semantic core across layers, and persistent evidence keyed to a non-identifying card fingerprint. No property is sufficient alone, and the fourth is what lets results accumulate across sessions instead of being discarded with each one.</p>
+      </div>
+
+      <p>The remainder of the report develops that claim. §2 fixes the protocol background and names the points at which beliefs are formed. §3 states the problem and derives the four properties. §4 positions the work against existing tooling. §5 gives the architecture. §6–§9 present the technical contributions in the order the four properties demand. §10 works four end-to-end examples. §11 covers safety posture and ethics, §12 evaluation, §13 limitations and roadmap.</p>
+
+      <h3>1.2 &nbsp;Contributions</h3>
+      <ul class="contrib">
+        <li><span class="tag">C1</span><span><b>Semantic divergence as the property under test.</b> A formulation of payment testing in which what is being tested is agreement between layers, and a concrete check implementing it across the card and host layers (§3, §7).</span></li>
+        <li><span class="tag">C2</span><span><b>T=0 length preservation.</b> A mechanism that restores the negotiated response length after any shrinking mutation by inserting ISO/IEC&nbsp;7816&#8209;4 padding <em>inside</em> the outermost template and rewriting its BER length field — converting an entire class of mutations from untestable to testable on contact cards (§6.1).</span></li>
+        <li><span class="tag">C3</span><span><b>DOL-aware command reconstruction.</b> Tracking of original and mutated CDOL layouts so that <span class="m">GENERATE&nbsp;AC</span> can be re-packed for the card after the terminal has been induced to omit a field — the mechanism that decouples a cryptogram from the amount it is supposed to cover (§6.2).</span></li>
+        <li><span class="tag">C4</span><span><b>A cross-layer DE55 check.</b> One BER&#8209;TLV core shared by the card layer and the ISO 8583 layer, guarded by a parity test, enabling comparison of DE4 against tag <span class="m">9F02</span> and DE49 against <span class="m">5F2A</span> — a check neither layer can express alone (§7.1).</span></li>
+        <li><span class="tag">C5</span><span><b>Dialect-as-data with self-verifying detection.</b> Eight axes of ISO 8583 deployment variance moved out of code into YAML, plus a scoring procedure that infers a link's dialect from captured bytes and reports calibrated uncertainty (§7.2).</span></li>
+        <li><span class="tag">C6</span><span><b>PAN-free evidence accumulation.</b> A card fingerprint derived only from application identity and capability flags — never from cardholder data — keying an outcome store that supports within-card, cross-card and cross-operator inference, consumed by both a deterministic recommender and a tool-driven LLM agent (§8).</span></li>
+        <li><span class="tag">C7</span><span><b>Posture inversion at the layer boundary.</b> The observation that a card-layer instrument must let nothing reach in while a host-layer instrument reaches out by design, and the corresponding asymmetric hardening — a target allow-list, test-PAN enforcement, masking at the point of capture, and a build-breaking AST invariant over the control plane (§11).</span></li>
+        <li><span class="tag">C8</span><span><b>An escalation ladder with declared costs.</b> Four host-layer rungs — observe, rewrite, originate, verify — each surrendering one safety property the rung below it holds, with the surrender stated, contained by explicit rules, and pinned by tests rather than left implicit (§7.3).</span></li>
+        <li><span class="tag">C9</span><span><b>Cryptographic closure of the check.</b> Key derivation and cryptogram verification that answer which copy of a disputed quantity the card actually signed, with the data composition itself expressed as an editable profile — and a self-test that reports what its passing does <em>not</em> establish (§7.4).</span></li>
+        <li><span class="tag">C10</span><span><b>Interface-independent mutation, and its bounds.</b> The transport abstraction extended to a contactless card and to an emulated card the platform presents to a terminal, so one pipeline mutates and logs across both interfaces — with the contactless-specific fidelity mechanism that mirrors contact length preservation, and the finding that its ceiling was never a hardware limit but an ownership boundary — taking the ISO-DEP block layer over retires it (§6.3, §9).</span></li>
+        <li><span class="tag">C11</span><span><b>An EMV block layer and ATR rewrite for SimTrace2.</b> A T=1 block layer added to the SimTrace2 card-emulation firmware, and an in-flight ATR rewrite in its host tool, which together carry a complete EMV transaction on hardware — the same fidelity principle applied beneath the APDU layer, with the three silent defects that stood in the way and the test-harness flaw that hid them (§6.4, §12.2).</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <section>
+    <h2><span class="num">2</span>Background: where beliefs are formed</h2>
+    <div class="cols">
+      <p>A contact EMV transaction is a short conversation of application protocol data units (APDUs). Each step deposits a belief in one of the participants, and each belief is a candidate for divergence.</p>
+
+      <h3>2.1 &nbsp;The card–terminal exchange</h3>
+      <p><b>Selection.</b> The terminal reads the payment system directory (<span class="m">1PAY.SYS.DDF01</span> on contact, <span class="m">2PAY.SYS.DDF01</span> on contactless) or probes a list of application identifiers, and selects one. The card answers with a File Control Information template that includes the <em>Processing Options Data Object List</em> (PDOL) — a declaration of exactly which terminal-supplied values the card wants, and in what order and length.</p>
+
+      <p><b>Initiation.</b> The terminal packs those values — amount, currency, country, terminal capabilities, an unpredictable number, a terminal transaction qualifier on contactless — into a <span class="m">GET&nbsp;PROCESSING&nbsp;OPTIONS</span> command. The card replies with the Application Interchange Profile (AIP), a bitmap of what authentication and verification it supports, and the Application File Locator (AFL), a map of which records to read and which of them fall inside the offline data authentication signature.</p>
+
+      <p><b>Reading.</b> The terminal reads those records: the CVM list defining which cardholder verification methods apply under which conditions, the issuer action codes, certificates, and the CDOLs — the object lists governing what the terminal must supply when it asks for a cryptogram.</p>
+
+      <p><b>Decision.</b> The terminal performs offline data authentication, cardholder verification and risk management, forms its view of the transaction, packs the CDOL1 fields, and issues <span class="m">GENERATE&nbsp;AC</span>. The card returns an application cryptogram computed over the values it was given.</p>
+
+      <p class="lead-in">The critical property: the cryptogram covers what the CDOL said it would cover, and nothing else.</p>
+      <p>If the amount is not in CDOL1, the cryptogram is not bound to the amount. If the CVM results byte is not in CDOL1, the cryptogram carries no evidence of how the cardholder was verified. Both facts are entirely conformant; both are decided by data the terminal read from the card moments earlier.</p>
+
+      <h3>2.2 &nbsp;The authorisation message</h3>
+      <p>Above that exchange, the acquirer builds an ISO 8583 authorisation request. Data element 4 carries the transaction amount that the switch routes, limits and authorises on. Data element 55 carries ICC data as BER&#8209;TLV — including tag <span class="m">9F02</span>, the amount the card was told about and the cryptogram was computed over.</p>
+
+      <p>The same quantity therefore travels twice, in two encodings, protected by two different mechanisms: DE4 by the network's integrity controls, <span class="m">9F02</span> by the cryptogram. Nothing in the protocol suite forces a downstream system to compare them.</p>
+
+      <h3>2.3 &nbsp;The transport that carries the lie</h3>
+      <p>One detail of ISO/IEC 7816&#8209;3 T=0 dominates the engineering of any contact-side mutation, and is the reason §6.1 exists. In T=0 the terminal must state in advance how many bytes it expects. When it asks for more or fewer than the card has, the card answers <span class="m">6C&nbsp;XX</span> — "re-issue with exactly XX" — and the terminal complies. The length is therefore <em>negotiated and then fixed</em> before the data arrives.</p>
+
+      <p>A mutation that deletes a tag, truncates a locator or substitutes a shorter value changes that length after the negotiation has concluded. The terminal does not evaluate the changed policy; it observes a short frame and restarts the transaction. The tester learns nothing about the device under test except that it can count.</p>
+    </div>
+
+    <div class="span">
+      <figure>
+        <svg viewBox="0 0 980 440" role="img" aria-label="Two protocol planes. Above, an acquirer sends an authorisation through a switch to an issuer. Below, a terminal talks to a card. Between them a seam box shows the same amount held twice — as data element 4, which the switch routes on, and as tag 9F02 inside DE55, which the cryptogram covers. The card and issuer have no direct channel, so nothing compares the two copies.">
+          <defs><marker id="f1a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="fill-ink"/></marker><marker id="f1f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="fill-flag"/></marker></defs>
+
+          <text x="24" y="22" class="eyebrow">HOST LAYER — ISO 8583 AUTHORISATION</text>
+          <line x1="24" y1="32" x2="956" y2="32" class="rule"/>
+
+          <rect x="40"  y="58" width="190" height="60" class="node"/>
+          <text x="135" y="84"  text-anchor="middle" class="title">Acquirer</text>
+          <text x="135" y="102" text-anchor="middle" class="sub">builds the 0100</text>
+
+          <rect x="395" y="58" width="190" height="60" class="node"/>
+          <text x="490" y="84"  text-anchor="middle" class="title">Switch / gateway</text>
+          <text x="490" y="102" text-anchor="middle" class="sub">routes and authorises</text>
+
+          <rect x="750" y="58" width="190" height="60" class="node"/>
+          <text x="845" y="84"  text-anchor="middle" class="title">Issuer</text>
+          <text x="845" y="102" text-anchor="middle" class="sub">verifies the cryptogram</text>
+
+          <line x1="230" y1="88" x2="389" y2="88" class="wire" marker-end="url(#f1a)"/>
+          <text x="309" y="79" text-anchor="middle" class="mono data t-mut">DE4 · DE49 · DE55</text>
+          <line x1="585" y1="88" x2="744" y2="88" class="wire" marker-end="url(#f1a)"/>
+          <text x="664" y="79" text-anchor="middle" class="mono data t-mut">DE55 unchanged</text>
+
+          <rect x="305" y="180" width="370" height="88" class="node-flag"/>
+          <text x="490" y="203" text-anchor="middle" class="eyebrow t-flag">THE SEAM — ONE QUANTITY, TWO COPIES</text>
+          <text x="392" y="232" text-anchor="middle" class="mono t-flag" font-size="12.5">DE4</text>
+          <text x="392" y="250" text-anchor="middle" class="sub">routed · authorised</text>
+          <text x="490" y="233" text-anchor="middle" class="t-flag" font-size="14">vs</text>
+          <text x="592" y="232" text-anchor="middle" class="mono t-flag" font-size="12.5">9F02 in DE55</text>
+          <text x="592" y="250" text-anchor="middle" class="sub">covered by the ARQC</text>
+
+          <line x1="490" y1="118" x2="490" y2="174" class="wire-flag" marker-end="url(#f1f)"/>
+          <text x="478" y="150" text-anchor="end" class="lbl t-flag">the copy it routes on</text>
+
+          <line x1="490" y1="318" x2="490" y2="274" class="wire-flag" marker-end="url(#f1f)"/>
+          <text x="478" y="298" text-anchor="end" class="lbl t-flag">the copy it signed</text>
+
+          <rect x="40"  y="318" width="190" height="60" class="node"/>
+          <text x="135" y="344" text-anchor="middle" class="title">Payment terminal</text>
+          <text x="135" y="362" text-anchor="middle" class="sub">packs what the CDOL asks</text>
+
+          <rect x="395" y="318" width="190" height="60" class="node"/>
+          <text x="490" y="344" text-anchor="middle" class="title">EMV card</text>
+          <text x="490" y="362" text-anchor="middle" class="sub">signs only what CDOL names</text>
+
+          <line x1="230" y1="348" x2="389" y2="348" class="wire" marker-end="url(#f1a)"/>
+          <text x="309" y="333" text-anchor="middle" class="mono t-mut" font-size="10.5">SELECT · GPO</text>
+          <text x="309" y="345" text-anchor="middle" class="mono t-mut" font-size="10.5">READ RECORD · GEN AC</text>
+
+          <line x1="585" y1="348" x2="730" y2="348" class="wire-dash"/>
+          <line x1="651" y1="340" x2="663" y2="356" class="wire" opacity=".55"/>
+          <line x1="663" y1="340" x2="651" y2="356" class="wire" opacity=".55"/>
+          <text x="744" y="344" class="lbl t-mut">no direct channel:</text>
+          <text x="744" y="360" class="lbl t-mut">the card never meets the issuer</text>
+
+          <line x1="24" y1="404" x2="956" y2="404" class="rule"/>
+          <text x="24" y="424" class="eyebrow">CARD LAYER — EMV APDUs OVER ISO/IEC 7816</text>
+        </svg>
+        <figcaption><b>Fig. 1.</b> The amount travels twice and is protected twice. The switch routes and authorises on DE4; the cryptogram covers the copy inside DE55. Because the card and the issuer never speak directly, a disagreement between the two copies is resolved silently, by whichever component a given deployment happens to trust. That seam — highlighted here, and wherever else it appears in this report — is the object under test.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <section>
+    <h2><span class="num">3</span>Problem statement</h2>
+    <div class="cols">
+      <p>Let a transaction be described by a set of quantities <span class="m">q₁…qₙ</span> — amount, currency, verification method, application identity, terminal capability. Each participant <span class="m">P</span> ends the transaction holding a belief <span class="m">bₚ(qᵢ)</span>. A protection mechanism binds some subset of those beliefs cryptographically.</p>
+
+      <p>A <b>semantic divergence</b> exists when two participants complete a transaction with <span class="m">b<sub>A</sub>(qᵢ) ≠ b<sub>B</sub>(qᵢ)</span> for some <span class="m">qᵢ</span> that at least one of them treats as authoritative, and no participant is positioned to detect the difference. The exploitability question is not whether divergence can be induced — a man in the middle can always induce it — but whether any deployed component <em>notices</em>.</p>
+
+      <p>That framing has a direct consequence for tooling. To test a divergence you must be able to (a) induce it precisely at one boundary, and (b) observe the consequence at another. A single-layer instrument can do the first, never the second.</p>
+
+      <h3>3.1 &nbsp;Four required properties</h3>
+
+      <h4>P1 — Protocol-faithful mutation</h4>
+      <p>A mutation must change meaning while preserving every transport invariant the receiver checks before it reaches its policy logic: frame length, structural well-formedness, length-prefix arithmetic, object-list arity. Otherwise the receiver rejects the frame and the test measures the parser rather than the policy. This is not a matter of degree: on T=0 contact, a three-byte length discrepancy aborts the transaction before the CVM decision is ever taken.</p>
+
+      <p>Three techniques share the word <em>fault</em> and target different things. A <em>fuzzer</em> emits malformed input to break a parser. <em>Glitching</em> — voltage, clock or laser — perturbs a chip's physical execution to skip an instruction, and in the smart-card literature is what <em>fault injection</em> most often means. This work does neither. It performs <b>message-level fault injection</b>, known in the dependability literature as interface fault injection: every injected fault is a <em>well-formed message carrying a wrong value</em>, delivered at a protocol boundary, so what is exercised is the receiver's policy rather than its parser or its silicon. No result in this report depends on physical access to a chip beyond holding the card in a reader.</p>
+
+      <h4>P2 — Declarative target modelling</h4>
+      <p>"ISO 8583" names a family, not a protocol; deployments differ on at least eight independent axes (Table II). "EMV" is likewise parameterised per card. Any tool that encodes a target's choices in code is single-target and disposable, and — worse for research — its results are not portable between engagements. Targets must be described by data the operator can author and version.</p>
+
+      <h4>P3 — A shared semantic core across layers</h4>
+      <p>The cross-layer check is only cheap because DE55 is BER&#8209;TLV, the same encoding the card emits. If the two layers are modelled by two independent parsers, every comparison becomes a translation with its own bugs. One core, used by both, makes the check a few lines of comparison — and makes divergence between the two <em>implementations</em> a testable property in its own right.</p>
+
+      <h4>P4 — Persistent, non-identifying evidence</h4>
+      <p>A card's response to a mutation is expensive evidence: it requires physical access, an authorised engagement, and time. Discarding it at the end of a session is the largest single inefficiency in current practice. Evidence must persist, keyed so that it generalises to <em>similar</em> cards rather than only the exact specimen — and keyed by something that is not cardholder data, so that the resulting corpus is not a liability.</p>
+
+      <h3>3.2 &nbsp;Evaluation model</h3>
+      <p>ATRIUM assumes a card the operator is authorised to test, a terminal or host under the same authorisation, and an operator who may position hardware or a proxy on either boundary. The adversary being <em>modelled</em> is a merchant-side or network-position attacker; the adversary being <em>defended against</em> in the tool's own design is anyone who reaches the operator's control plane (§11).</p>
+
+      <p>The card-layer half additionally requires the genuine card, physically, in a reader under the operator's control — it manipulates a live session and cannot fabricate one. The host layer is not bounded that way and it would be wrong to imply otherwise: replay (§7.3, rung 3) originates authorisation messages from a captured corpus with no card and no acquirer present. What bounds it instead is the scoping guard — a target allow-list it will not transmit outside, and a cardholder-data policy that treats a live account number as a signal the link is pointed at production (§11.2). That is a weaker bound than physics, and it is why the ladder's most active rung carries the most explicit constraints.</p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <section>
+    <h2><span class="num">4</span>Related work and the tooling gap</h2>
+    <div class="cols">
+      <p><b>Attack literature.</b> The divergence framing is a synthesis of results rather than a new observation about any one of them. Murdoch et&nbsp;al. [1] demonstrated terminal/card disagreement over cardholder verification; Bond et&nbsp;al. [3] and Roland and Langer [2] showed pre-play and downgrade paths in which a cryptogram authenticates a transaction other than the one presented; Basin et&nbsp;al. established both the contactless PIN bypass [4] and the brand mix-up [5] by formal analysis with Tamarin, and Emms et&nbsp;al. [6] showed currency-scoped divergence. De Ruiter and Poll [7] gave an early formal treatment of the suite. What this body of work does not supply is an instrument: each result was obtained with bespoke apparatus, and the apparatus rarely outlived the paper.</p>
+
+      <p><b>Formal verification</b> proves properties of a model. It is complementary and, in our view, upstream: a model tells you which divergences <em>could</em> matter; only an instrument on real hardware tells you which deployed component actually notices. ATRIUM is explicitly the second thing.</p>
+
+      <p><b>Capture and relay tooling.</b> Contact and contactless sniffers, virtual-card bridges [9] and relay boards solve the physical problem of getting between two parties. The contact side of this work runs on SimTrace2 [10]: its hardware, its card-emulation application, and its host relay tool are the foundation everything in §5 and §6 sits on. SimTrace2 supplies the electrical activation state machine, the USB message plane between host and board, and byte-oriented card emulation, all of it proven in the SIM-relay role it was built for. Carrying an EMV transaction additionally requires the block-oriented protocol and an answer-to-reset an EMV terminal will admit; that extension is described in §6.4 and reported in full in the companion note [15].</p>
+
+      <p><b>Fuzzing.</b> Grammar-based and coverage-guided fuzzers excel at finding memory-safety and parser defects. They are structurally poor at policy defects: a fuzzer's success criterion is a crash or a coverage delta, whereas a divergence produces a perfectly successful transaction with the wrong meaning. P1 inverts the fuzzing objective — never malform, always mean something different.</p>
+
+      <p><b>Host-side harnesses.</b> Acquirer and issuer simulators exist commercially and in open source, and are generally built around a single institution's interface specification. They test conformance to a spec, not disagreement with the layer below, and they have no view of the card.</p>
+    </div>
+
+    <div class="span">
+      <div class="tablewrap">
+        <table>
+          <caption><span class="tbl-label">Table I</span><span class="tbl-title">Instrument classes against the four required properties</span><span class="cap-sub">Assessed as classes of tooling, not as specific products. "Data" under target model means an operator can describe a new target without writing code.</span></caption>
+          <thead>
+            <tr>
+              <th style="width:23%">Instrument class</th>
+              <th style="width:14%">Layers covered</th>
+              <th style="width:15%">P1 transport fidelity</th>
+              <th style="width:14%">P2 target model</th>
+              <th style="width:17%">P3 shared core</th>
+              <th style="width:17%">P4 evidence memory</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Passive APDU / bus sniffer</td><td>Card only</td><td class="no">n/a — observes</td><td class="no">Code</td><td class="no">None</td><td class="no">Log files</td></tr>
+            <tr><td>Relay / virtual-card rig</td><td>Card only</td><td class="part">Forwards verbatim</td><td class="no">Code</td><td class="no">None</td><td class="no">None</td></tr>
+            <tr><td>Grammar or coverage fuzzer</td><td>One, per harness</td><td class="no">Inverted objective</td><td class="part">Grammar</td><td class="no">None</td><td class="part">Corpus only</td></tr>
+            <tr><td>Formal model checker</td><td>Specification</td><td class="no">Not applicable</td><td class="yes">Model</td><td class="part">Within the model</td><td class="no">Per model</td></tr>
+            <tr><td>Acquirer / issuer simulator</td><td>Host only</td><td class="part">Conformance-shaped</td><td class="no">Code, per switch</td><td class="no">None</td><td class="no">None</td></tr>
+            <tr><td><b>ATRIUM</b></td><td><b>Card + host</b></td><td class="yes">Invariants restored</td><td class="yes">YAML dialects + specs</td><td class="yes">One TLV core, parity-tested</td><td class="yes">Fingerprint-keyed store</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <section>
+    <h2><span class="num">5</span>Architecture</h2>
+    <div class="cols">
+      <p>ATRIUM is two halves that share a semantic core and nothing else. The card half is a man-in-the-middle between a terminal and a card — on the contact interface through a SimTrace2 board whose card-emulation firmware and host tool this work extends (§6.4), on the contactless interface through an emulating reader: the terminal believes it is talking to a card, the card believes it is talking to a terminal, and every APDU pair passes through a pipeline that logs, decodes, fingerprints and — when armed — rewrites. The host half is a full instrument for the ISO 8583 authorisation link above it — proxy, capture, mutation, replay and cryptography — built as the escalation ladder of §7.3. Neither half imports the other's hardware dependencies; the host package runs on a machine with no reader attached, and its dependency file is short enough to check.</p>
+
+      <h3>5.1 &nbsp;The card-side pipeline</h3>
+      <p>Commands descend and responses ascend through four hook points, shown in Fig. 2. Layer 1 (<span class="m">emv_logger.py</span>, 1,568&nbsp;lines) performs structured logging with full TLV decoding and never modifies. Layer 3 (<span class="m">mutation_engine.py</span>, 1,833&nbsp;lines) performs every rewrite. The separation matters for evidence quality: the log records what the card actually said, not what the terminal was told it said, so a session transcript contains both sides of any divergence the operator induced.</p>
+
+      <p>Three orthogonal mutation families are available. <em>Command-side</em> mutations rewrite the PDOL-derived data in <span class="m">GET&nbsp;PROCESSING&nbsp;OPTIONS</span>, unpacking the terminal's buffer against the PDOL layout captured from the preceding FCI, substituting fields, and re-packing. <em>Response-side</em> mutations locate tags in the card's answer and apply one of seven modes — <span class="m">replace</span>, <span class="m">delete</span>, <span class="m">splice</span>, <span class="m">xor</span>, <span class="m">flip_bit</span>, <span class="m">prepend</span>, <span class="m">append</span> — plus structural modes specific to the AFL (<span class="m">skip_signed</span>, <span class="m">truncate</span>, <span class="m">remove_sfi</span>, <span class="m">extend</span>) and to the CDOLs (<span class="m">remove_field</span>, <span class="m">truncate</span>). <em>Injection</em> fires additional APDUs to the card at defined flow points; responses are logged and never forwarded, so the terminal's view of the transaction is unchanged while the operator obtains data the terminal never requested.</p>
+
+      <h3>5.2 &nbsp;One interface, five card sources</h3>
+      <p>All card I/O passes through a single <span class="m">CardTransport</span> interface (Fig. 3), and every layer above it — the fingerprinter, the mutation engine, the logger, the agent — is written against that interface alone. What sits behind it has grown to five backends, none of which the upper layers can distinguish. A <em>local</em> transport drives a physical card through a PC/SC reader. A <em>remote</em> transport reaches a card in another network over the pinned TLS link of §9, so a card in one jurisdiction can be driven by a rig in another under a single authorised engagement. A <em>recorded</em> transport answers APDUs from a capture file, which needs no card at all and is what lets the whole stack — and most of its test suite — run with no hardware present. A <em>contactless</em> transport drives a card in an ACR122U's radio field. And an <em>Android</em> transport reaches a card held in a phone's field over NFCGate, so the reader an operator already owns becomes a card source anywhere the phone can reach the session server — at the cost of a network hop in a budget that was already tight, and of a server that authenticates nobody and therefore belongs on loopback.</p>
+
+      <p>The abstraction that once bought only location independence now also buys interface independence, and — through the emulator of §9 — direction independence: the same pipeline that mutates a card's answers to a terminal can instead present an <em>emulated</em> card to a terminal and mutate a real card's answers on their way out. A recorded capture standing in for that real card closes the loop, letting an operator see exactly what a terminal asks for with nothing physical on the bench but the emulating reader.</p>
+
+      <p><b>Naming the readers.</b> That flexibility created an operational trap worth a mechanism of its own. Readers were once addressed by an opaque PC/SC index, which is stable until the virtual card bridge is running — at which point the <em>virtual</em> reader, ATRIUM's own output side, usually lands at index 0. Defaulting to it is always wrong on a working rig and produces an error that reads like a card fault rather than a wiring mistake. Reader discovery is therefore centralised: each reader is classified as virtual, contact or contactless from its PC/SC name — matching the interface marker (PICC/ICC) on a word boundary, since a dual-interface reader exposes both slots under one model name — so nothing downstream has to guess which index is the card side. A reader can still be selected by index, but it can also be identified physically by blinking its light through the same ACR122U escape channel the emulator uses, and by its position on the USB tree.</p>
+
+      <h3>5.3 &nbsp;Control plane</h3>
+      <p>A FastAPI application serves a six-stage operator console — hardware, session, fingerprint, attack, agent, results — over WebSocket-streamed APDU and agent events. The console is a convenience; every stage has a command-line equivalent, and the platform's guarantees do not depend on the browser being present.</p>
+    </div>
+
+    <div class="span">
+      <figure>
+        <svg viewBox="0 0 980 356" role="img" aria-label="The intercept pipeline. A command from the terminal passes through the logger, then the mutation engine, then reaches the card; the response returns through the mutation engine and the logger before the terminal sees it. The logger records the card's genuine response before any rewrite. The mutation engine can also inject commands whose replies are logged but never forwarded upstream.">
+          <defs><marker id="f2a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="fill-ink"/></marker><marker id="f2f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="fill-flag"/></marker></defs>
+
+          <rect x="212" y="52" width="556" height="268" class="frame"/>
+          <text x="228" y="74" class="eyebrow">ATRIUM INTERCEPT PIPELINE</text>
+
+          <rect x="24"  y="90" width="155" height="172" class="node"/>
+          <text x="101" y="166" text-anchor="middle" class="title">Payment</text>
+          <text x="101" y="184" text-anchor="middle" class="title">terminal</text>
+
+          <rect x="800" y="90" width="155" height="172" class="node"/>
+          <text x="877" y="166" text-anchor="middle" class="title">EMV card</text>
+          <text x="877" y="184" text-anchor="middle" class="sub">contact or contactless</text>
+
+          <rect x="240" y="96" width="225" height="46" class="node"/>
+          <text x="360" y="117" text-anchor="middle" class="lbl">Layer 1 · log + decode TLV</text>
+          <text x="360" y="133" text-anchor="middle" class="mono data t-mut">on_command()</text>
+          <circle cx="240" cy="96" r="10" class="badge"/><text x="240" y="100" text-anchor="middle" class="num">1</text>
+
+          <rect x="500" y="96" width="245" height="46" class="node-flag"/>
+          <text x="624" y="117" text-anchor="middle" class="lbl t-flag">Layer 3 · PDOL rewrite + inject</text>
+          <text x="624" y="133" text-anchor="middle" class="mono data t-flag">on_command()</text>
+          <circle cx="500" cy="96" r="10" class="badge"/><text x="500" y="100" text-anchor="middle" class="num">2</text>
+
+          <line x1="179" y1="119" x2="234" y2="119" class="wire" marker-end="url(#f2a)"/>
+          <text x="207" y="110" text-anchor="middle" class="mono data t-mut">C-APDU</text>
+          <line x1="465" y1="119" x2="494" y2="119" class="wire" marker-end="url(#f2a)"/>
+          <line x1="745" y1="119" x2="794" y2="119" class="wire" marker-end="url(#f2a)"/>
+
+          <rect x="500" y="212" width="245" height="46" class="node-flag"/>
+          <text x="624" y="233" text-anchor="middle" class="lbl t-flag">Layer 3 · TLV rewrite + refit</text>
+          <text x="624" y="249" text-anchor="middle" class="mono data t-flag">on_response()</text>
+          <circle cx="745" cy="212" r="10" class="badge"/><text x="745" y="216" text-anchor="middle" class="num">3</text>
+
+          <rect x="240" y="212" width="225" height="46" class="node"/>
+          <text x="360" y="233" text-anchor="middle" class="lbl">Layer 1 · log + label SW</text>
+          <text x="360" y="249" text-anchor="middle" class="mono data t-mut">on_response()</text>
+          <circle cx="465" cy="212" r="10" class="badge"/><text x="465" y="216" text-anchor="middle" class="num">4</text>
+
+          <line x1="794" y1="235" x2="751" y2="235" class="wire" marker-end="url(#f2a)"/>
+          <line x1="494" y1="235" x2="471" y2="235" class="wire" marker-end="url(#f2a)"/>
+          <line x1="234" y1="235" x2="185" y2="235" class="wire" marker-end="url(#f2a)"/>
+          <text x="209" y="226" text-anchor="middle" class="mono data t-mut">R-APDU</text>
+
+          <line x1="747" y1="170" x2="794" y2="170" class="wire-dash-flag" marker-end="url(#f2f)"/>
+          <text x="741" y="174" text-anchor="end" class="lbl t-flag">injected</text>
+          <line x1="794" y1="192" x2="747" y2="192" class="wire-dash-flag" marker-end="url(#f2f)"/>
+          <text x="741" y="196" text-anchor="end" class="lbl t-flag">logged, never forwarded up</text>
+
+          <rect x="240" y="272" width="225" height="42" class="node-soft"/>
+          <text x="360" y="291" text-anchor="middle" class="lbl">Outcome store</text>
+          <text x="360" y="306" text-anchor="middle" class="sub">non-routine status words only</text>
+          <line x1="360" y1="258" x2="360" y2="268" class="wire" marker-end="url(#f2a)"/>
+
+          <text x="487" y="290" class="lbl t-mut">records what the card said —</text>
+          <text x="487" y="306" class="lbl t-mut">not what the terminal was told</text>
+        </svg>
+        <figcaption><b>Fig. 2.</b> Logging and mutation are separate stages, and the order matters: Layer 1 records the card's genuine response at ④ <em>after</em> Layer 3 has already rewritten what the terminal will see at ③, so one transcript holds both halves of any divergence the operator induced. Injected commands (dashed) reach the card and their replies are logged, but never travel upstream — the terminal's view of the transaction is unchanged.</figcaption>
+      </figure>
+    </div>
+
+    <div class="span">
+      <figure>
+        <svg viewBox="0 0 980 474" role="img" aria-label="One CardTransport interface with five backends behind it — a local reader, a remote card over a pinned link, a recorded capture file, a contactless field, and a card held in an Android phone over NFCGate — none of which the layers above can distinguish. Below, the same interface runs in reverse: an ACR122U acting as the card presents to a terminal and relays to any of those five sources.">
+          <defs><marker id="f3a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="fill-ink"/></marker><marker id="f3k" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="fill-key"/></marker></defs>
+
+          <text x="24" y="22" class="eyebrow">ONE INTERFACE — FIVE CARD SOURCES</text>
+          <line x1="24" y1="32" x2="956" y2="32" class="rule"/>
+
+          <rect x="30" y="112" width="205" height="86" class="node"/>
+          <text x="132" y="138" text-anchor="middle" class="title">Upper layers</text>
+          <text x="132" y="158" text-anchor="middle" class="sub">fingerprint · mutate · log · reason</text>
+          <text x="132" y="180" text-anchor="middle" class="sub t-faint">cannot tell which backend</text>
+
+          <line x1="235" y1="155" x2="276" y2="155" class="wire" marker-end="url(#f3a)"/>
+
+          <rect x="282" y="125" width="200" height="60" class="node-key"/>
+          <text x="382" y="150" text-anchor="middle" class="title t-key">CardTransport</text>
+          <text x="382" y="169" text-anchor="middle" class="mono t-key" font-size="10.5">connect · get_atr · transmit</text>
+
+          <polyline points="482,155 518,155 518,62 548,62"    class="wire-key" marker-end="url(#f3k)"/>
+          <polyline points="482,155 518,155 518,122 548,122"  class="wire-key" marker-end="url(#f3k)"/>
+          <polyline points="482,155 518,155 518,182 548,182"  class="wire-key" marker-end="url(#f3k)"/>
+          <polyline points="482,155 518,155 518,242 548,242"  class="wire-key" marker-end="url(#f3k)"/>
+          <polyline points="482,155 518,155 518,302 548,302"  class="wire-key" marker-end="url(#f3k)"/>
+
+          <rect x="554" y="40"  width="396" height="44" class="node"/>
+          <text x="570" y="59"  class="lbl">Local</text>
+          <text x="570" y="75"  class="sub">a physical card in a PC/SC reader</text>
+          <text x="934" y="67"  text-anchor="end" class="mono data t-faint">pyscard</text>
+
+          <rect x="554" y="100" width="396" height="44" class="node"/>
+          <text x="570" y="119" class="lbl">Remote</text>
+          <text x="570" y="135" class="sub">a card in another network</text>
+          <text x="934" y="127" text-anchor="end" class="mono data t-faint">pinned TLS · §9</text>
+
+          <rect x="554" y="160" width="396" height="44" class="node"/>
+          <text x="570" y="179" class="lbl">Recorded</text>
+          <text x="570" y="195" class="sub">APDUs answered from a capture file</text>
+          <text x="934" y="187" text-anchor="end" class="mono data t-faint">no card at all</text>
+
+          <rect x="554" y="220" width="396" height="44" class="node"/>
+          <text x="570" y="239" class="lbl">Contactless</text>
+          <text x="570" y="255" class="sub">a card in an ACR122U's field</text>
+          <text x="934" y="247" text-anchor="end" class="mono data t-faint">PN532</text>
+
+          <rect x="554" y="280" width="396" height="44" class="node"/>
+          <text x="570" y="299" class="lbl">Android</text>
+          <text x="570" y="315" class="sub">a card in a phone's field, over NFCGate</text>
+          <text x="934" y="307" text-anchor="end" class="mono data t-faint">network hop</text>
+
+          <line x1="24" y1="350" x2="956" y2="350" class="rule"/>
+          <text x="24" y="372" class="eyebrow">AND IN REVERSE — THE PLATFORM AS THE CARD</text>
+
+          <rect x="30"  y="394" width="160" height="58" class="node"/>
+          <text x="110" y="420" text-anchor="middle" class="title">Terminal</text>
+          <text x="110" y="437" text-anchor="middle" class="sub">selects it as a card</text>
+
+          <rect x="285" y="394" width="200" height="58" class="node-key"/>
+          <text x="385" y="420" text-anchor="middle" class="title t-key">ACR122U as target</text>
+          <text x="385" y="437" text-anchor="middle" class="sub t-key">answers as a card</text>
+
+          <rect x="580" y="394" width="170" height="58" class="node-key"/>
+          <text x="665" y="427" text-anchor="middle" class="title t-key">CardTransport</text>
+
+          <rect x="800" y="394" width="150" height="58" class="node"/>
+          <text x="875" y="420" text-anchor="middle" class="title">any source</text>
+          <text x="875" y="437" text-anchor="middle" class="sub">above</text>
+
+          <line x1="190" y1="423" x2="279" y2="423" class="wire" marker-start="url(#f3a)" marker-end="url(#f3a)"/>
+          <text x="234" y="414" text-anchor="middle" class="mono data t-mut">RF</text>
+          <line x1="485" y1="423" x2="574" y2="423" class="wire-key" marker-end="url(#f3k)"/>
+          <line x1="750" y1="423" x2="794" y2="423" class="wire-key" marker-end="url(#f3k)"/>
+        </svg>
+        <figcaption><b>Fig. 3.</b> The abstraction that once bought only location independence now buys interface and direction independence too. Nothing above the interface changes when the card behind it becomes a file or a radio field — which is also what lets most of the test suite run with no hardware present. In reverse (below), the platform presents a card to a terminal and relays to any of the same five sources; pointing that relay at the reader doing the emulating is refused rather than attempted, because one ACR122U cannot be target and initiator at once.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <section>
+    <h2><span class="num">6</span>Protocol-faithful mutation (P1)</h2>
+    <div class="cols">
+      <p>This section presents the two mechanisms that distinguish message-level fault injection from mere corruption on the contact interface. Both exist because a semantic edit has structural consequences that the receiver checks before it reaches any decision logic.</p>
+
+      <h3>6.1 &nbsp;T=0 length preservation</h3>
+      <p>Consider the most interesting mutations available at the card layer. Removing a field from CDOL1 decouples the cryptogram from that field. Zeroing the offline-authentication record counts in the AFL removes every record from the signature scope. Truncating the AFL suppresses the records that carry the CVM list. Deleting tag <span class="m">8D</span> prevents the second <span class="m">GENERATE&nbsp;AC</span>. Deleting issuer script templates suppresses a PIN unblock.</p>
+
+      <p>Every one of them makes the response <em>shorter</em>. On T=0 that is fatal to the experiment, for the reason given in §2.3: the length was negotiated via <span class="m">6C&nbsp;XX</span> before the mutation happened, and a short frame restarts the transaction rather than exercising the policy.</p>
+
+      <p>ATRIUM restores the negotiated length after every shrinking edit (Fig. 4). The mechanism is narrow: it appends ISO/IEC 7816&#8209;4 padding bytes (<span class="m">0xFF</span>) <em>inside</em> the outermost BER&#8209;TLV template and rewrites that template's length field to match, so the frame the terminal receives is byte-for-byte the length it asked for, structurally valid, and semantically identical to the mutated content — the padding lies outside every inner tag and is skipped by any conformant TLV walk.</p>
+
+      <p>Correctness is guarded rather than assumed. The routine decodes the outer tag (including multi-byte tags), decodes the length in short, <span class="m">0x81</span> and <span class="m">0x82</span> forms, and verifies that the declared inner length equals the actual remaining bytes before touching anything. If any check fails it logs and returns the response unmodified — a failed pad is a lost experiment, whereas a wrong pad is a corrupted one that could be misread as a device defect.</p>
+
+      <div class="callout">
+        <div class="co-head">Why this is the enabling contribution</div>
+        <p>Without length preservation, the mutations that test <em>cryptographic binding</em> — the class that produced the most consequential published attacks — cannot be run at all on contact cards. Of the eleven attack templates ATRIUM ships, four shrink the response and are untestable without it. It is a small routine that changes what the platform is capable of asking.</p>
+      </div>
+
+      <h3>6.2 &nbsp;DOL-aware command reconstruction</h3>
+      <p>The second mechanism handles a subtler asymmetry. When ATRIUM removes a field from CDOL1 in a <span class="m">READ&nbsp;RECORD</span> response, the terminal reads the shortened list and packs <span class="m">GENERATE&nbsp;AC</span> accordingly — one field lighter. The card, however, was never told: it still expects the original layout and will parse the buffer against it, mis-aligning every subsequent field.</p>
+
+      <p>A card that validates the command length against its own CDOL1 answers <span class="m">67&nbsp;00</span> — wrong length — and the transaction dies before any cryptogram is computed. The engine therefore retains both layouts for the session and reconstructs the command before forwarding: it walks the original layout, copies through every field the terminal did supply, and inserts a zero-filled placeholder of the declared width wherever a field was stripped. The card receives a well-formed request in exactly the layout it declared; the terminal believes it supplied a complete one; the cryptogram is computed over zeros for the removed field.</p>
+
+      <p>That is the divergence, constructed and observable: the transaction succeeds, the terminal prints the real amount, and the cryptogram is not bound to it. Whether that matters is then a question about the <em>issuer</em>, which is what the host layer (§7) is for.</p>
+
+      <h3>6.3 &nbsp;The contactless mirror: who owns the framing layer</h3>
+      <p>Extending the mutation pipeline to the contactless interface exposed the same class of problem with the sign flipped, and the contrast is instructive about what protocol-faithful mutation actually requires. On contact T=0, the hazard is a response that has become <em>too short</em> for a length negotiated in advance, and §6.1 answers it by growing the frame back with padding that carries no meaning. On the contactless interface driven through the ACR122U's PN532, there is no advance length negotiation to satisfy — but the chip carries at most 262 bytes in one exchange, so the hazard is the opposite: a mutation that makes a response <em>too long</em> — a replaced tag with a longer value, an append, a splice past the boundary — cannot be sent at all.</p>
+
+      <p>When the ceiling is genuinely fixed there is no way to grow past it, so the mechanism declines (Fig. 5): an oversized mutated response is dropped in favour of the card's own bytes, the exchange is relayed unmutated, and a counter records how often it happened. The operator reads "that rule does not fit contactless" from the trace rather than watching the radio link drop into a timeout with nothing to diagnose. This is the same value judgement as the contact side — a failed mutation is a lost experiment, a corrupted link is a lost afternoon.</p>
+
+      <p><b>But the ceiling is not a law of the interface; it is a consequence of who owns the block layer.</b> Left to itself the PN532 performs ISO/IEC 14443-4 on the platform's behalf, which is why the emulator deals in whole APDUs — and why one response must fit one frame, why the frame waiting time is the firmware's choice, and why a relay that outruns that budget is dropped with nothing said. Taking that layer over reverses all three at once: the platform answers RATS with an ATS it composed, so the terminal's waiting budget is one it chose; it can send S(WTX) to ask for more time while the relayed card is still being waited on, which is the mechanism the standard provides for exactly this situation; and a long response goes out as several chained blocks rather than being refused, which retires the ceiling outright.</p>
+
+      <p>That is offered as a second driver rather than a replacement, and the reason is the ladder of §7.3 read at a different layer. The chip-managed path is the proven one and remains the default; owning the block layer buys capability by taking on every detail the firmware was handling correctly. The generalisation is that protocol-faithful mutation is bounded by the lowest layer the tester controls: on contact the platform owns the TLV template and can therefore pad it (§6.1), and on contactless it can grow a response exactly when it owns the framing beneath it. What looked like a hardware limit was an ownership boundary.</p>
+
+      <p>The same extension motivated a seventh response mode, <span class="m">splice</span>: overwrite a run of bytes at a given offset and leave the length exactly as the card sent it. A resizing edit shifts every byte after it and, inside a signed template, invalidates far more than intended; a length-preserving splice changes one field in place and is the safe primitive for probing a value without disturbing its container. It refuses an offset or patch that would run past the end of the value rather than silently resizing — the same discipline as the modes it joins.</p>
+
+      <h3>6.4 &nbsp;Below the APDU layer: activation and the ATR</h3>
+      <p>Everything above assumes a card is already talking to a terminal. Reaching that point is the deepest instance of the same principle, and chronologically it comes first.</p>
+
+      <p>The contact relay is SimTrace2 [10]. A bank card sits in a PC/SC reader on the host; <span class="m">simtrace2-remsim</span> forwards every command over USB to a SimTrace2 board running its card-emulation application, and the board impersonates the card to the terminal down to the electrical layer — supply, clock, reset and a single half-duplex line. From that platform this work inherits the parts that are hard and already correct: the activation state machine, driven entirely by interrupts as the terminal walks the electrical sequence, and the framed USB message plane that carries commands, responses and status between host and board.</p>
+
+      <p>What EMV additionally demands is a different protocol and a different answer-to-reset. SimTrace2's emulation was built for SIM cards, which speak the byte-oriented protocol T=0; a large share of bank cards speak only the block-oriented T=1. A bank card's ATR also encodes a clock rate, a guard time and block parameters it expects to be honoured, and an EMV terminal applies admission rules of its own on top of ISO/IEC 7816&#8209;3, turning a card down before a single command is exchanged if the ATR falls outside them.</p>
+
+      <p>Two additions close that gap. The first is a complete T=1 block layer in the firmware: framing under either error-detection code, the three block types, sequence numbering, chaining in both directions, information-field-size negotiation, and the resynchronise, abort and waiting-extension service blocks. It is free-standing, depending on nothing but the C string library and its own header, which is why it survived a rebase of the whole firmware onto a newer upstream release without an edit, and why it can be exercised on a workstation with no board attached. The second is in the host tool, and is the more interesting of the two.</p>
+
+      <h4>The ATR rewrite</h4>
+      <p>The second addition is the smaller of the two. The card's real ATR is read over the reader and forwarded to the terminal, but not verbatim, because the emulation runs at exactly one set of transmission parameters. Any interface byte that asks the terminal to clock differently is a promise the board cannot keep — forward the clock-rate byte and the terminal clocks four times faster than the board can answer, and it sees framing errors rather than a card.</p>
+
+      <p>So the rewrite drops every byte that is an <em>electrical</em> promise and keeps every byte that is a <em>protocol</em> parameter or an <em>identity</em>. The historical bytes pass through untouched, so the terminal still sees the real card. The information-field size and the block-timing pair are kept, because they are protocol rather than electrical — and because EMV requires the timing pair and rejects the card outright when it is absent, falling back to an ISO default that sits outside the range EMV accepts. The protocol-indicator chain is rebuilt so those two bytes land in the group where a T=1 link is allowed to name them, and the checksum is recomputed over the new body (Fig. 6).</p>
+
+      <p>The same principle applies here, one layer below the APDUs. §6.1 preserves a length the terminal negotiated; §6.3 preserves a frame the chip can carry; here the rewrite preserves the terminal's electrical expectations and the card's identity while discarding what the relay cannot honour. In each case the edit is chosen so that the receiver reaches its policy rather than its parser — and the deeper the layer the tester owns, the more of the transaction becomes reachable, which is the generalisation §6.3 reaches from the other direction.</p>
+
+      <p>Protocol selection is treated the same way. A proposal for a protocol the ATR did not offer leaves the card mute, as the standard requires, rather than being echoed back unchecked; the terminal then falls back or resets. And because the two links are independent protocol domains, joined only at APDU level, the protocols on either side need not match: a T=1 card can be presented to a T=0 terminal and the reverse, with the host converting the response forms between them.</p>
+
+    </div>
+
+    <div class="span">
+      <figure>
+        <svg viewBox="0 0 980 268" role="img" aria-label="Three byte strips at one scale. The genuine record response fills the twenty-eight byte length the terminal negotiated. After a mutation removes a three-byte entry the response is three bytes short and the terminal restarts. After repadding inside the outer template it reaches the negotiated length again and the terminal evaluates it.">
+          <defs><marker id="f4a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="fill-ink"/></marker></defs>
+
+          <text x="24" y="22" class="eyebrow">CONTACT · T=0 — THE TERMINAL NEGOTIATED Le = 1C (28 BYTES)</text>
+          <line x1="24" y1="32" x2="956" y2="32" class="rule"/>
+
+          <line x1="742" y1="48" x2="742" y2="214" class="wire-dash"/>
+          <text x="742" y="232" text-anchor="middle" class="mono data t-mut">28</text>
+
+          <text x="24" y="72" class="lbl t-mut">① genuine</text>
+          <rect x="150" y="56"  width="44"  height="26" class="node"/>
+          <text x="172" y="74"  text-anchor="middle" class="mono data">70</text>
+          <rect x="194" y="56"  width="44"  height="26" class="node"/>
+          <text x="216" y="74"  text-anchor="middle" class="mono data">1A</text>
+          <rect x="238" y="56"  width="504" height="26" class="node"/>
+          <text x="490" y="74"  text-anchor="middle" class="mono data t-mut">26 bytes of value — CDOL1 (8C) still lists 9F02</text>
+          <text x="762" y="74"  class="lbl t-key">✓ accepted</text>
+
+          <text x="24" y="128" class="lbl t-flag">② mutated</text>
+          <text x="24" y="144" class="sub t-flag">9F02 dropped</text>
+          <rect x="150" y="112" width="44"  height="26" class="node-flag"/>
+          <text x="172" y="130" text-anchor="middle" class="mono data t-flag">70</text>
+          <rect x="194" y="112" width="44"  height="26" class="node-flag"/>
+          <text x="216" y="130" text-anchor="middle" class="mono data t-flag">17</text>
+          <rect x="238" y="112" width="450" height="26" class="node-flag"/>
+          <text x="463" y="130" text-anchor="middle" class="mono data t-flag">23 bytes — the entry is gone</text>
+          <rect x="688" y="112" width="54"  height="26" class="node-soft" stroke-dasharray="4 3" opacity=".5"/>
+          <text x="762" y="126" class="lbl t-flag">✗ three bytes short</text>
+          <text x="762" y="142" class="sub t-flag">terminal restarts — policy never reached</text>
+
+          <line x1="463" y1="152" x2="463" y2="176" class="wire" marker-end="url(#f4a)"/>
+          <text x="475" y="168" class="lbl t-mut">rewrite the length field, pad inside</text>
+
+          <text x="24" y="202" class="lbl t-mut">③ repadded</text>
+          <rect x="150" y="186" width="44"  height="26" class="node"/>
+          <text x="172" y="204" text-anchor="middle" class="mono data">70</text>
+          <rect x="194" y="186" width="44"  height="26" class="node"/>
+          <text x="216" y="204" text-anchor="middle" class="mono data">1A</text>
+          <rect x="238" y="186" width="450" height="26" class="node"/>
+          <text x="463" y="204" text-anchor="middle" class="mono data t-mut">23 bytes — the entry is still gone</text>
+          <rect x="688" y="186" width="54"  height="26" class="node" stroke-dasharray="4 3"/>
+          <text x="715" y="204" text-anchor="middle" class="mono data">FF×3</text>
+          <text x="762" y="198" class="lbl t-key">✓ accepted</text>
+          <text x="762" y="214" class="sub">policy now evaluated</text>
+        </svg>
+        <figcaption><b>Fig. 4.</b> Length preservation at one scale, so the deficit is visible rather than asserted. The padding sits inside the outer template and outside every inner tag, so a conformant TLV walk steps over it: the terminal receives the length it negotiated and the meaning the operator intended. Without strip ③, every shrinking mutation measures the terminal's byte counter instead of its policy engine.</figcaption>
+      </figure>
+    </div>
+
+    <div class="span">
+      <figure>
+        <svg viewBox="0 0 980 372" role="img" aria-label="Two panels showing mirrored hazards. On contact a mutated response falls three bytes short of a negotiated length and is padded back up to it. On contactless a mutated response runs past a single-frame ceiling; while the chip owns the block layer it cannot be sent and the card's own bytes are relayed instead, but when the platform owns that layer the response is chained across several blocks and the ceiling disappears. Both panels turn on which layer the tester controls.">
+          <defs><marker id="f5a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="fill-ink"/></marker></defs>
+
+          <line x1="490" y1="44" x2="490" y2="318" class="rule"/>
+
+          <text x="24" y="20" class="eyebrow">CONTACT · T=0 — THE FRAME IS TOO SHORT</text>
+          <text x="24" y="38" class="sub">a length was negotiated before the mutation happened</text>
+
+          <line x1="404" y1="56" x2="404" y2="192" class="wire-dash"/>
+          <text x="404" y="228" text-anchor="middle" class="mono data t-mut">28 negotiated</text>
+
+          <text x="24" y="76" class="sub">① genuine</text>
+          <rect x="100" y="62" width="304" height="20" class="node"/>
+
+          <text x="24" y="124" class="sub t-flag">② mutated</text>
+          <rect x="100" y="110" width="272" height="20" class="node-flag"/>
+          <rect x="372" y="110" width="32" height="20" class="node-soft" stroke-dasharray="3 3" opacity=".5"/>
+          <text x="100" y="150" class="lbl t-flag">✗ three bytes short — the terminal restarts</text>
+
+          <text x="24" y="186" class="sub">③ repadded</text>
+          <rect x="100" y="172" width="272" height="20" class="node"/>
+          <rect x="372" y="172" width="32" height="20" class="node" stroke-dasharray="3 3"/>
+          <text x="100" y="212" class="lbl t-key">✓ back to 28 — the policy is evaluated</text>
+
+          <text x="24" y="266" class="lbl t-key">We own the TLV template, so we can pad it.</text>
+          <text x="24" y="282" class="sub">The padding carries no meaning, so nothing else moves.</text>
+
+          <text x="516" y="20" class="eyebrow">CONTACTLESS — THE FRAME IS TOO LONG</text>
+          <text x="516" y="38" class="sub">one frame's ceiling, while the chip owns the block layer</text>
+
+          <line x1="866" y1="56" x2="866" y2="192" class="wire-dash-flag"/>
+          <text x="866" y="228" text-anchor="middle" class="mono data t-flag">one-frame ceiling</text>
+
+          <text x="516" y="76" class="sub">① genuine</text>
+          <rect x="592" y="62" width="220" height="20" class="node"/>
+
+          <text x="516" y="124" class="sub t-flag">② mutated</text>
+          <rect x="592" y="110" width="274" height="20" class="node-flag"/>
+          <rect x="866" y="110" width="62" height="20" class="node-flag" stroke-dasharray="3 3"/>
+          <text x="592" y="150" class="lbl t-flag">✗ past the ceiling — it cannot be sent</text>
+
+          <text x="516" y="186" class="sub">③ declined</text>
+          <rect x="592" y="172" width="220" height="20" class="node"/>
+          <text x="592" y="212" class="lbl t-key">✓ the card's own bytes, relayed unmutated</text>
+
+          <line x1="516" y1="240" x2="944" y2="240" class="rule"/>
+
+          <text x="516" y="266" class="lbl t-key">Take the block layer and the ceiling goes away.</text>
+          <text x="516" y="282" class="sub">④ chained — the same response, several blocks</text>
+          <rect x="592" y="292" width="112" height="18" class="node-key"/>
+          <rect x="710" y="292" width="112" height="18" class="node-key"/>
+          <rect x="828" y="292" width="100" height="18" class="node-key"/>
+          <text x="648" y="305" text-anchor="middle" class="data t-key">I-block</text>
+          <text x="766" y="305" text-anchor="middle" class="data t-key">I-block</text>
+          <text x="878" y="305" text-anchor="middle" class="data t-key">final</text>
+
+          <line x1="24" y1="336" x2="956" y2="336" class="rule"/>
+          <text x="490" y="360" text-anchor="middle" class="lbl">A mutation can grow a frame exactly when the tester owns the layer that decides its length.</text>
+        </svg>
+        <figcaption><b>Fig. 5.</b> The same fidelity concern with its sign flipped, and the same underlying cause. On contact the frame must be grown back to a length agreed before the mutation happened, which the platform can do because it owns the TLV template. On contactless, while the chip performs ISO-DEP the ceiling is real and the available move is ③ — relay the card's own bytes and record that the rule did not fit. Taking the block layer over turns the same response into ④, several chained blocks, and the ceiling disappears. What makes both protocol-faithful is not the remedy, which differs, but the refusal to put a malformed frame on the wire.</figcaption>
+      </figure>
+    </div>
+
+    <div class="span">
+      <figure>
+        <svg viewBox="0 0 980 300" role="img" aria-label="Two byte strips comparing the card's real answer-to-reset with the one pushed to the terminal. Nineteen bytes in, fifteen out. The electrical promise bytes are dropped, the historical bytes carrying the card's identity pass through untouched, the information-field size and block-timing bytes are kept because EMV requires them, the protocol-indicator chain is rebuilt so those bytes land in a group where T=1 may name them, and the checksum is recomputed.">
+          <defs><marker id="f6a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="fill-ink"/></marker></defs>
+
+          <text x="24" y="22" class="eyebrow">THE ANSWER-TO-RESET, REWRITTEN IN FLIGHT</text>
+          <line x1="24" y1="32" x2="956" y2="32" class="rule"/>
+
+          <text x="24" y="70" class="sub">as read from the card</text>
+          <text x="24" y="86" class="sub t-faint">19 bytes</text>
+
+          <rect x="150" y="52" width="46" height="40" class="node"/>
+          <text x="173" y="70" text-anchor="middle" class="mono data">3B</text>
+          <text x="173" y="85" text-anchor="middle" class="sub t-faint">TS</text>
+          <rect x="196" y="52" width="46" height="40" class="node"/>
+          <text x="219" y="70" text-anchor="middle" class="mono data">F8</text>
+          <text x="219" y="85" text-anchor="middle" class="sub t-faint">T0</text>
+
+          <rect x="242" y="52" width="184" height="40" class="node-flag" stroke-dasharray="4 3"/>
+          <text x="334" y="70" text-anchor="middle" class="mono data t-flag">13 · 00 · FF · 01</text>
+          <text x="334" y="85" text-anchor="middle" class="sub t-flag">TA1 TB1 TC1 TA2</text>
+
+          <rect x="426" y="52" width="46" height="40" class="node"/>
+          <text x="449" y="70" text-anchor="middle" class="mono data">91</text>
+          <text x="449" y="85" text-anchor="middle" class="sub t-faint">TD1</text>
+          <rect x="472" y="52" width="46" height="40" class="node"/>
+          <text x="495" y="70" text-anchor="middle" class="mono data">31</text>
+          <text x="495" y="85" text-anchor="middle" class="sub t-faint">TD2</text>
+
+          <rect x="518" y="52" width="92" height="40" class="node-key"/>
+          <text x="564" y="70" text-anchor="middle" class="mono data t-key">FE · 41</text>
+          <text x="564" y="85" text-anchor="middle" class="sub t-key">TA3 TB3</text>
+
+          <rect x="610" y="52" width="252" height="40" class="node"/>
+          <text x="736" y="70" text-anchor="middle" class="mono data">53 4C 4A 26 31 23 02 01</text>
+          <text x="736" y="85" text-anchor="middle" class="sub t-faint">historical bytes — the card's identity</text>
+
+          <rect x="862" y="52" width="46" height="40" class="node"/>
+          <text x="885" y="70" text-anchor="middle" class="mono data">68</text>
+          <text x="885" y="85" text-anchor="middle" class="sub t-faint">TCK</text>
+
+          <line x1="334" y1="104" x2="334" y2="132" class="wire-flag" marker-end="url(#f6a)"/>
+          <text x="346" y="122" class="lbl t-flag">dropped — cannot be honoured</text>
+          <line x1="564" y1="104" x2="564" y2="132" class="wire-key" marker-end="url(#f6a)"/>
+          <text x="576" y="150" class="lbl t-key">kept — protocol, not electrical; EMV rejects the card without TB3</text>
+
+          <text x="24" y="196" class="sub">as pushed to the terminal</text>
+          <text x="24" y="212" class="sub t-faint">15 bytes</text>
+
+          <rect x="150" y="178" width="46" height="40" class="node"/>
+          <text x="173" y="196" text-anchor="middle" class="mono data">3B</text>
+          <text x="173" y="211" text-anchor="middle" class="sub t-faint">TS</text>
+          <rect x="196" y="178" width="46" height="40" class="node"/>
+          <text x="219" y="196" text-anchor="middle" class="mono data">88</text>
+          <text x="219" y="211" text-anchor="middle" class="sub t-faint">T0</text>
+
+          <rect x="242" y="178" width="46" height="40" class="node-key"/>
+          <text x="265" y="196" text-anchor="middle" class="mono data t-key">81</text>
+          <text x="265" y="211" text-anchor="middle" class="sub t-key">TD1</text>
+          <rect x="288" y="178" width="46" height="40" class="node-key"/>
+          <text x="311" y="196" text-anchor="middle" class="mono data t-key">31</text>
+          <text x="311" y="211" text-anchor="middle" class="sub t-key">TD2</text>
+
+          <rect x="334" y="178" width="92" height="40" class="node-key"/>
+          <text x="380" y="196" text-anchor="middle" class="mono data t-key">FE · 45</text>
+          <text x="380" y="211" text-anchor="middle" class="sub t-key">TA3 TB3</text>
+
+          <rect x="426" y="178" width="252" height="40" class="node"/>
+          <text x="552" y="196" text-anchor="middle" class="mono data">53 4C 4A 26 31 23 02 01</text>
+          <text x="552" y="211" text-anchor="middle" class="sub t-faint">unchanged</text>
+
+          <rect x="678" y="178" width="46" height="40" class="node-key"/>
+          <text x="701" y="196" text-anchor="middle" class="mono data t-key">E1</text>
+          <text x="701" y="211" text-anchor="middle" class="sub t-key">TCK</text>
+          <text x="736" y="202" class="lbl t-key">recomputed over the new body</text>
+
+          <line x1="24" y1="252" x2="956" y2="252" class="rule"/>
+          <text x="490" y="276" text-anchor="middle" class="lbl">Drop what the relay cannot honour; keep what the terminal checks and what identifies the card.</text>
+        </svg>
+        <figcaption><b>Fig. 6.</b> The ATR rewrite, byte for byte. Nineteen bytes in, fifteen out. What leaves are the electrical promises — clock rate, guard time, and the byte that would have the terminal adopt them without even a negotiation — because the emulation runs at one fixed set of parameters and forwarding them produces framing errors rather than a card. What stays is everything the terminal decides on: the historical bytes that identify the card, and the information-field size and block-timing pair, which are protocol parameters and which EMV requires — absent the latter the terminal falls back to an ISO default outside EMV's accepted range and refuses the card before a single block is exchanged, with every character having been transmitted correctly.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <section>
+    <h2><span class="num">7</span>The cross-layer bridge (P2, P3)</h2>
+    <div class="cols">
+      <h3>7.1 &nbsp;DE55 and the cross-layer check</h3>
+      <p>The host half of ATRIUM decodes ISO 8583 authorisation traffic. Its integration with the card half is a single observation: DE55 carries ICC data as BER&#8209;TLV, the same encoding a card emits, so the TLV core that parses a <span class="m">READ&nbsp;RECORD</span> response parses DE55 unchanged. Every mutation primitive that works on a card response works on DE55 without modification.</p>
+
+      <p>That makes the check small enough to state completely. For each quantity that appears twice — the amount as DE4 and as tag <span class="m">9F02</span>, the currency as DE49 and as <span class="m">5F2A</span> — the checker normalises the two encodings and reports a discrepancy record naming both copies. A summary function extracts the authorisation-relevant tags (<span class="m">9F26</span> cryptogram, <span class="m">9F27</span> CID, <span class="m">9F36</span> ATC, <span class="m">9F34</span> CVM results, <span class="m">95</span> TVR) for the session log.</p>
+
+      <p>The interpretation is conservative and is stated in the code: <em>a mismatch is not automatically a vulnerability — it is the signal worth chasing.</em> A gateway may legitimately restate an amount after currency conversion. What the check establishes is that a downstream system is deciding on a number the cardholder's card never signed, and the finding is then about which copy that system trusts.</p>
+
+      <p>Sharing a core across two packages creates a duplication hazard: the host package vendors the TLV implementation so it can run without <span class="m">pyscard</span> installed. Rather than accept drift, a parity test runs both implementations over a shared corpus — including malformed and truncated inputs — and fails the build on any divergence. The guard is documented as temporary: when a third consumer appears, both copies collapse into a shared module and the test retires with them.</p>
+
+      <h3>7.2 &nbsp;Dialects as data, and inferring them</h3>
+      <p>"ISO 8583" is a family. Deployments differ on message-length-indicator width and inclusiveness, presence of a TPDU header, body character encoding (ASCII or EBCDIC), MTI encoding, bitmap representation, numeric encoding, length-prefix encoding, and odd-digit padding direction — eight independent axes, each with real deployments on both sides (Table II).</p>
+
+      <p>Hard-coding any of them is what makes host tooling single-target. ATRIUM's codec contains no dialect-specific logic at all: a dialect is a YAML file, and an <span class="m">extends:</span> mechanism keeps a new one to a short diff, because most real deployments are ISO 8583:1987 plus a handful of private-use fields.</p>
+
+      <p>Scheme specifications are <em>not</em> shipped. They are confidential, and a reconstruction from public knowledge would be wrong in ways an operator would discover mid-engagement — worse than having nothing. On a real engagement the authoritative interface specification comes from the target's owner, which is precisely why dialects must be user-authorable.</p>
+
+      <p>That leaves the practical question of walking into an environment without one. ATRIUM answers it by inference: a <em>correct</em> configuration is strongly self-verifying. The length indicator predicts exactly where the message ends; the MTI is four decimal digits of a plausible class; the bitmap names fields the dialect defines; and decoding those fields lands precisely on the final byte. Wrong configurations rarely satisfy all four. The scorer weights these so that consuming the message exactly dominates, and a syntactically valid MTI alone — which random bytes produce roughly once in three hundred — counts for almost nothing.</p>
+
+      <p>Two properties of the scorer are unusual in tooling of this kind. First, nothing scores a perfect 1.0: two dialects differing only in private-use fields genuinely are indistinguishable from a plain message, and the score says so rather than pretending otherwise. Second, the decoder degrades instead of raising — a message decoded up to field 43 is real evidence about an unknown link, while an exception is not. Callers inspect <span class="m">Message.problems</span> and <span class="m">Message.complete</span>.</p>
+
+      <h3>7.3 &nbsp;An escalation ladder, with the costs declared</h3>
+      <p>The host half is not one tool but four, and they are ordered by how much they can disturb the system under test (Fig. 7). Each rung buys a capability by surrendering a safety property the rung below it holds. Stating that surrender explicitly — in the code, in the tests, and to the operator — is what makes the ladder safe to put in someone else's test environment.</p>
+
+      <h4>Rung 1 — observe, byte-exactly</h4>
+      <p>The passive proxy forwards bytes exactly as received, the instant they arrive, <em>before anything tries to understand them</em>. Decoding gets its own copy and sits entirely off the relay path. The reasoning is the same one that produced the degrading decoder: a dialect is a guess about somebody else's system, and here a wrong guess must degrade to "I could not read that" rather than to a corrupted link. When framing itself turns out to be wrong the connection drops to opaque relay — bytes keep flowing, decoding stops, the operator is told.</p>
+      <p>That guarantee is not a claim in a comment; it is pinned by a test that runs the proxy under a deliberately wrong dialect and asserts the far side received the original bytes. A tool that observes a production-adjacent link needs exactly that kind of proof, and it is cheap to state and easy to lose.</p>
+
+      <h4>Rung 2 — rewrite, and admit what that costs</h4>
+      <p>The mutating proxy gives the guarantee up, because rewriting a message means re-encoding it from the decoded form, and a codec bug can now corrupt a live link. Three rules contain the blast radius rather than pretending it away. A message that did not decode cleanly is <em>never</em> mutated, since problems or trailing bytes mean the dialect is not a perfect fit and re-encoding would silently drop what was not understood. A message no rule touched is forwarded verbatim, never round-tripped, so untargeted traffic keeps rung 1's guarantee in full. And a re-encode that fails forwards the original and says so loudly — a failed mutation is a bad experiment, a broken link is a bad afternoon.</p>
+      <p>The mutation vocabulary is the card layer's: the same six modes, the same playbook shape, the same specs-loaded-from-YAML structure, with message type and direction of travel replacing the instruction byte as the gate. Two target kinds are addressed — data elements, and DE55 tags through the shared TLV core. One shipped playbook describes itself as the direct counterpart of a card-side combination, one layer up, in the same vocabulary. That is P2 and P3 paying out together: what an operator learns on one half transfers to the other.</p>
+      <p>Two modes are refused rather than guessed at. Bit-flipping and XOR are byte operations, and on a text field there is no defined answer to <em>which</em> bytes — the ASCII, the BCD packing, or the digits — so the engine declines instead of picking one.</p>
+
+      <h4>Rung 3 — originate, with no acquirer present</h4>
+      <p>Replay drives messages from a captured corpus at a host directly, playing the acquirer itself. This is why rung 1 keeps raw bytes: a decoded-only capture is only as good as the dialect you had at the time.</p>
+      <p>Its two modes are an experiment design rather than a feature list. <em>Verbatim</em> resends exactly what was captured; most hosts should decline it, because the trace and reference numbers have been seen before — and a host that <em>approves</em> a byte-identical replay has no duplicate detection at all. Nothing clever is needed to ask that question, which is why it is the default. <em>Freshen</em> rewrites only the volatile routing fields — trace number, retrieval reference, transmission and local date-time — so the message looks like a new transaction, while leaving DE55 and its cryptogram exactly as captured. That asks the sharper question: is the cryptogram actually <em>bound</em> to those fields, or can a genuine one be reused under a new trace number? DE55 is untouched by design; reusing it untouched <em>is</em> the experiment.</p>
+      <p>Replay is the most active thing in the toolkit — it originates transactions rather than observing someone else's — so the scoping guard of §11.2 applies in full, and the cardholder-data check matters more here than anywhere else: a corpus captured from a live link would otherwise resend real cardholder data.</p>
+
+      <h3>7.4 &nbsp;Cryptographic closure</h3>
+      <p>The final rung answers the question the check could previously only pose. Given an issuer master key, ATRIUM derives the card's unique derived key from the PAN and sequence number, derives the session key from the transaction counter, and recomputes the cryptogram over the message as captured.</p>
+
+      <p>Three design choices make this an instrument rather than a calculator.</p>
+
+      <p><b>The data composition is a profile, not a constant.</b> The MAC itself is fixed by the standard; what varies between schemes is <em>which bytes get MACed</em>, and that is precisely the part the scheme specifications keep confidential. So the composition is an ordered list of tags in a YAML file — the same treatment dialects get, for the same reason. The recommended specification-order composition ships; a scheme-specific one is a short file the operator writes from the document their client hands them.</p>
+
+      <p><b>Verification refuses to guess.</b> A cryptogram computed over the wrong data fails identically to a forged one, and telling those two apart is the entire value of the exercise. Missing tags are therefore reported rather than skipped or zero-filled, and the verifier declines to compute at all when its inputs are incomplete, returning a stated reason instead of a mismatch it cannot stand behind. The comparison is constant-time on principle — this code runs beside code that talks to a host, and a verifier that leaks its comparison sets a bad example.</p>
+
+      <p><b>Cross-layer fallback is reported, never silent.</b> When DE55 omits a tag that also exists as a data element — the amount, the currency — the builder may fall back to the 8583 copy, and records that it did. This is the thesis in a single mechanism: if the two copies disagree, verification fails, and the operator learns <em>which copy the card actually signed</em>. Silently substituting would produce a mismatch with no explanation; reporting the substitution turns the same failure into evidence.</p>
+
+      <p>Re-signing completes the loop for rung 3. With a valid cryptogram over the <em>new</em> counter and amount, an approval no longer merely tells you the host skipped cryptogram checking — it tells you what the host does or does not enforce <em>besides</em> the cryptogram. Issuer response cryptograms are generated by both defined methods, so the response leg can be exercised too.</p>
+
+      <p>Cryptography came last, and the ordering matters: everything above it answers real questions without a single key. A playbook that tampers with a cryptogram asks whether the value is verified <em>at all</em> — which is worth knowing before investing in computing one correctly.</p>
+    </div>
+
+    <div class="span">
+      <figure>
+        <svg viewBox="0 0 980 322" role="img" aria-label="Four rungs of an escalation ladder rising left to right. Rung one observes and holds byte-exact forwarding. Rung two rewrites and gives up byte exactness, contained by three rules. Rung three originates transactions and gives up being an observer, bounded by the scoping guard. Rung four verifies cryptograms and needs an issuer key. Each rung names the property it surrenders.">
+          <defs><marker id="f6f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="fill-flag"/></marker></defs>
+
+          <text x="24" y="22" class="eyebrow">HOST LAYER — WHAT EACH RUNG CAN DISTURB</text>
+          <line x1="24" y1="32" x2="956" y2="32" class="rule"/>
+
+          <rect x="24" y="196" width="216" height="82" class="node"/>
+          <circle cx="24" cy="196" r="10" class="badge"/><text x="24" y="200" text-anchor="middle" class="num">1</text>
+          <text x="44" y="222" class="title">Observe</text>
+          <text x="44" y="240" class="sub">passive proxy</text>
+          <text x="44" y="262" class="lbl t-key">holds byte-exactness</text>
+
+          <rect x="256" y="150" width="216" height="128" class="node"/>
+          <circle cx="256" cy="150" r="10" class="badge"/><text x="256" y="154" text-anchor="middle" class="num">2</text>
+          <text x="276" y="176" class="title">Rewrite</text>
+          <text x="276" y="194" class="sub">mutating proxy</text>
+          <text x="276" y="216" class="lbl t-flag">gives up byte-exactness</text>
+          <text x="276" y="236" class="sub">never mutate an unclean decode</text>
+          <text x="276" y="252" class="sub">forward untargeted verbatim</text>
+          <text x="276" y="268" class="sub">a failed re-encode sends the original</text>
+
+          <rect x="488" y="104" width="216" height="174" class="node"/>
+          <circle cx="488" cy="104" r="10" class="badge"/><text x="488" y="108" text-anchor="middle" class="num">3</text>
+          <text x="508" y="130" class="title">Originate</text>
+          <text x="508" y="148" class="sub">corpus replay</text>
+          <text x="508" y="170" class="lbl t-flag">gives up being an observer</text>
+          <text x="508" y="192" class="sub">verbatim → is there duplicate</text>
+          <text x="508" y="208" class="sub">detection at all?</text>
+          <text x="508" y="228" class="sub">freshen → is the cryptogram bound</text>
+          <text x="508" y="244" class="sub">to the routing fields?</text>
+          <text x="508" y="266" class="sub t-key">scoping guard applies in full</text>
+
+          <rect x="720" y="58" width="236" height="220" class="node-key"/>
+          <circle cx="720" cy="58" r="10" class="badge"/><text x="720" y="62" text-anchor="middle" class="num">4</text>
+          <text x="740" y="84"  class="title t-key">Verify</text>
+          <text x="740" y="102" class="sub t-key">key derivation · cryptogram</text>
+          <text x="740" y="124" class="lbl t-flag">needs an issuer master key</text>
+          <text x="740" y="146" class="sub">answers the open question:</text>
+          <text x="740" y="162" class="sub">which copy did the card sign?</text>
+          <text x="740" y="184" class="sub">composition is a profile, not code</text>
+          <text x="740" y="204" class="sub">declines rather than guessing</text>
+          <text x="740" y="224" class="sub">re-signing sharpens rung 3</text>
+          <text x="740" y="252" class="sub t-faint">the only rung that needs</text>
+          <text x="740" y="266" class="sub t-faint">material you were given</text>
+
+          <line x1="24" y1="300" x2="948" y2="300" class="wire-flag" marker-end="url(#f6f)"/>
+          <text x="24" y="318" class="sub t-flag">each rung surrenders a property the one below it holds — stated in the code, contained by explicit rules, and pinned by a test</text>
+        </svg>
+        <figcaption><b>Fig. 7.</b> The host-layer ladder. Height encodes what a rung can disturb, not how much code it is. Rung 1's guarantee is proved by running the proxy under a deliberately wrong dialect and asserting the far side received the original bytes; rung 2 surrenders exactly that, and spends three explicit rules keeping the loss confined to messages a rule actually targeted. Nothing here is a default — an operator who does not need to change anything is told to stay on rung 1.</figcaption>
+      </figure>
+    </div>
+
+    <div class="span">
+      <div class="tablewrap">
+        <table>
+          <caption><span class="tbl-label">Table II</span><span class="tbl-title">The eight axes of ISO 8583 deployment variance, all expressed as data</span><span class="cap-sub">Every axis below is a field in a dialect YAML file; the codec contains no branch specific to any deployment.</span></caption>
+          <thead>
+            <tr><th style="width:20%">Axis</th><th style="width:46%">Variants supported</th><th style="width:34%">Why a wrong choice is not obviously wrong</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Length indicator</td><td>2-byte binary (excluding or including itself), 4-byte ASCII, 2-byte BCD, 4-byte binary</td><td>An off-by-two silently mis-frames every subsequent message in the stream</td></tr>
+            <tr><td>TPDU header</td><td>Absent, or 5 bytes ahead of the MTI</td><td>Five extra bytes shift the MTI into what looks like a valid message class</td></tr>
+            <tr><td>Body encoding</td><td>ASCII, EBCDIC (cp500)</td><td>EBCDIC digits decode as ASCII letters, not as an error</td></tr>
+            <tr><td>MTI encoding</td><td>4 ASCII characters, 2 bytes packed BCD</td><td>Both are four digits; only the byte count differs</td></tr>
+            <tr><td>Bitmap</td><td>8-byte binary, 16-character hex; secondary auto-detected</td><td>Hex bitmaps parse as binary and name plausible-looking fields</td></tr>
+            <tr><td>Numeric encoding</td><td>Packed BCD, ASCII</td><td>Halves or doubles every numeric field's byte length</td></tr>
+            <tr><td>Length prefixes</td><td>BCD or ASCII; LLVAR, LLLVAR, LLLLVAR</td><td>Counts <em>digits</em> for <span class="m">n</span>/<span class="m">z</span>, <em>characters</em> for <span class="m">an</span>/<span class="m">ans</span>, <em>bytes</em> for <span class="m">b</span> — DE55 is <span class="m">b</span></td></tr>
+            <tr><td>Odd-digit padding</td><td>Left with zero (quantities), right with <span class="m">F</span> (PAN, track 2)</td><td>A padded PAN still looks like a PAN</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <section>
+    <h2><span class="num">8</span>Evidence that accumulates (P4)</h2>
+    <div class="cols">
+      <h3>8.1 &nbsp;A fingerprint that is not an identity</h3>
+      <p>Every session begins with a structured profile of the card: application identifiers enumerated via the directory or a fallback list, the full record map per application, PDOL and CDOL layouts, decoded AIP flags, every CVM rule with its method and condition, derived cryptographic capability, and counters obtained by <span class="m">GET&nbsp;DATA</span>.</p>
+
+      <p>From that profile ATRIUM derives a fingerprint: a SHA-256 digest, truncated, over the sorted list of <em>application identifier, AIP and decoded capability flags</em> — and nothing else.</p>
+
+      <p>The exclusions are the design. The fingerprint contains no primary account number, no track data, no expiry, no cardholder name. It is therefore not a card identity but a <b>capability class</b>: two cards issued on the same product profile hash identically, and the store's knowledge generalises to the next specimen of that product rather than being stranded on the one in the reader. The same choice makes the accumulated corpus something an operator can retain and share without holding cardholder data — a research asset instead of a liability.</p>
+
+      <h3>8.2 &nbsp;Turning status words into evidence</h3>
+      <p>During a relay session, every command/response pair is paired and streamed to the console, and every status word is classified. Routine outcomes are discarded: <span class="m">9000</span>, and the <span class="m">61&nbsp;XX</span>/<span class="m">6C&nbsp;XX</span> chaining and length-correction codes, carry no signal and would swamp the store. Five codes are labelled <span class="m">security_condition</span> — <span class="m">6983</span>, <span class="m">6984</span>, <span class="m">6985</span>, <span class="m">6986</span>, <span class="m">6988</span> — because each means the card evaluated something and refused. Other <span class="m">6xxx</span> codes are labelled <span class="m">interesting</span>. The operator can also mark any row manually from the live trace, and manual marks are ranked above automatic ones because a human decided they mattered.</p>
+
+      <p>Each record carries the fingerprint, the session, the command's instruction byte, both APDUs and the label. That last detail — storing the <em>instruction byte</em> alongside the status word — is what makes the corpus useful: <span class="m">6985</span> on <span class="m">GENERATE&nbsp;AC</span> and <span class="m">6985</span> on <span class="m">GPO</span> mean entirely different things, and the pair is the unit of inference.</p>
+
+      <h3>8.3 &nbsp;From evidence to the next experiment</h3>
+      <p>Two consumers read the store. The first is a deterministic recommender that ranks up to five next attacks from card profile, attack history and outcome patterns. Partially successful attacks rank first, then outcome-derived adjustments, then attacks whose preconditions the profile satisfies, then combination prerequisites, then the untried remainder. The outcome-derived rules encode exactly the reasoning an experienced operator applies: <span class="m">6985</span> or <span class="m">6984</span> on <span class="m">GENERATE&nbsp;AC</span> means the card caught the manipulation, so downgrade authentication before retrying verification; <span class="m">6985</span> on <span class="m">GPO</span> means the PDOL edit was rejected, so change the vector; three or more security conditions means the card is sensitive, so baseline with silent collection first; <span class="m">6983</span> on <span class="m">VERIFY</span> means the PIN path is closed, so pursue no-CVM directly.</p>
+
+      <p>The second consumer is an optional LLM agent with eleven tools — fingerprint, configure, start and stop the relay, read the mutation and session logs, load and record card intelligence, query outcome patterns. It is provider-agnostic: Anthropic, OpenAI, or any OpenAI-compatible local server, resolved from environment with an explicit override, and the platform reports the agent as unavailable and carries on when none is configured.</p>
+
+      <div class="callout">
+        <div class="co-head">On what the model is for</div>
+        <p>The agent does not invent byte sequences. The search space is made explicit before the model sees it — eleven attack templates with stated preconditions, a structured card profile, and a labelled outcome history — so the model's job is <em>selection and interpretation</em>, which is what it is good at, rather than protocol synthesis, which it is not. The deterministic recommender remains the floor: every conclusion the agent reaches is reproducible without it.</p>
+      </div>
+
+      <p>A cross-card query completes the loop. Before a never-before-seen card, an operator can ask what status-word patterns have appeared across every card previously tested and on how many distinct fingerprints — a prior, derived from evidence, for a specimen about which nothing else is yet known.</p>
+    </div>
+
+    <div class="span">
+      <figure>
+        <svg viewBox="0 0 980 336" role="img" aria-label="A cycle. Fingerprint the card, run a relay session with mutations armed, label each status word with its instruction byte, and store the outcome keyed by fingerprint. The store feeds a recommender and an agent, which rank what the next session tries. A separate outer path carries cross-card patterns into the fingerprint stage, so a card never seen before starts from a prior rather than from nothing.">
+          <defs><marker id="f7a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="fill-ink"/></marker><marker id="f7k" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="fill-key"/></marker></defs>
+
+          <text x="24" y="22" class="eyebrow">SESSION n</text>
+          <line x1="24" y1="32" x2="956" y2="32" class="rule"/>
+
+          <rect x="30" y="66" width="185" height="60" class="node"/>
+          <circle cx="30" cy="66" r="10" class="badge"/><text x="30" y="70" text-anchor="middle" class="num">1</text>
+          <text x="122" y="92"  text-anchor="middle" class="title">Fingerprint</text>
+          <text x="122" y="110" text-anchor="middle" class="mono data t-mut">AID:AIP:flags → hash</text>
+
+          <rect x="255" y="66" width="185" height="60" class="node"/>
+          <circle cx="255" cy="66" r="10" class="badge"/><text x="255" y="70" text-anchor="middle" class="num">2</text>
+          <text x="347" y="92"  text-anchor="middle" class="title">Relay session</text>
+          <text x="347" y="110" text-anchor="middle" class="sub">mutations armed</text>
+
+          <rect x="480" y="66" width="185" height="60" class="node"/>
+          <circle cx="480" cy="66" r="10" class="badge"/><text x="480" y="70" text-anchor="middle" class="num">3</text>
+          <text x="572" y="92"  text-anchor="middle" class="title">Label SW + INS</text>
+          <text x="572" y="110" text-anchor="middle" class="mono data t-mut">6985@AE ≠ 6985@A8</text>
+
+          <rect x="705" y="66" width="215" height="60" class="node-key"/>
+          <circle cx="705" cy="66" r="10" class="badge"/><text x="705" y="70" text-anchor="middle" class="num">4</text>
+          <text x="812" y="92"  text-anchor="middle" class="title t-key">Outcome store</text>
+          <text x="812" y="110" text-anchor="middle" class="sub t-key">no PAN, ever</text>
+
+          <line x1="215" y1="96" x2="249" y2="96" class="wire" marker-end="url(#f7a)"/>
+          <line x1="440" y1="96" x2="474" y2="96" class="wire" marker-end="url(#f7a)"/>
+          <line x1="665" y1="96" x2="699" y2="96" class="wire" marker-end="url(#f7a)"/>
+
+          <polyline points="812,126 812,196 686,196" class="wire-key" marker-end="url(#f7k)"/>
+
+          <rect x="470" y="170" width="210" height="54" class="node-key"/>
+          <text x="575" y="194" text-anchor="middle" class="title t-key">Recommender · Agent</text>
+          <text x="575" y="211" text-anchor="middle" class="sub t-key">ranks the next five</text>
+
+          <polyline points="470,197 347,197 347,132" class="wire-key" marker-end="url(#f7k)"/>
+          <text x="357" y="160" class="sub t-key">session n+1</text>
+
+          <polyline points="920,96 950,96 950,286 122,286 122,132" class="wire-dash-key" marker-end="url(#f7k)"/>
+          <text x="536" y="278" text-anchor="middle" class="sub t-key">cross-card patterns — a prior for a card never seen before</text>
+        </svg>
+        <figcaption><b>Fig. 8.</b> The loop that makes sessions cumulative. Storing the instruction byte beside the status word is what makes the corpus usable — <span class="m">6985</span> on GENERATE AC and <span class="m">6985</span> on GPO mean different things, and the pair is the unit of inference. Because the key is a capability class rather than a card identity, evidence from one specimen informs the next card of the same product; the outer dashed path lets a card nobody has tested start from a cross-card prior instead of from nothing.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <section>
+    <h2><span class="num">9</span>Communication: separating the card from the rig</h2>
+    <div class="cols">
+      <p>The relay's transport abstraction admits a card that is not in the room. This matters for three reasons: laboratories share scarce specimens; an authorised engagement may span jurisdictions; and relay-resistance behaviour is only meaningfully studied at realistic network latency.</p>
+
+      <p>Publishing a payment card on a socket is, however, precisely the operation that must not be casual. ATRIUM's link uses an SSH-shaped trust model rather than a web-shaped one. The card host generates a long-lived self-signed identity once and prints a <em>pairing string</em> carrying its address, its certificate fingerprint and an access token. The rig operator transfers that string out of band and pastes it.</p>
+
+      <p>Authentication is then mutual and ordered. The rig authenticates the card host by pinning the certificate's SHA-256 against the fingerprint in the pairing string; the card host authenticates the rig by a token compared in constant time. The token is transmitted <em>only after</em> the pin matches, so an impostor presenting a substituted certificate never receives it.</p>
+
+      <p>There is no domain to validate, and involving a public certificate authority would make <em>any</em> CA-issued certificate acceptable — strictly weaker than pinning one known key. The reasoning is the same as an SSH host key: trust is established out of band by two operators who know each other.</p>
+
+      <p>Two operational properties follow. Serving a card on a non-loopback address without the secure mode is refused outright, so a card cannot be published in the clear by accident; plaintext remains available over loopback for SSH-tunnelled use and the console labels it <em>plaintext — tunnel only</em> so the weaker mode is never invisible. And because the pairing string carries the token, it is treated as a private key: a single rotation command generates a fresh identity and invalidates every string previously issued, which is the operation a collaboration's end actually requires.</p>
+
+      <p>The report is explicit about the limit of this: transport security protects the link, not the endpoints. Both operators still need authorisation for the card and the terminal being tested.</p>
+
+      <h3>9.1 &nbsp;The other direction: presenting a card to a terminal</h3>
+      <p>Everything above concerns reaching a card. The contactless work adds the mirror capability — reaching a <em>terminal</em>, by having the platform itself act as the card. Put into target mode, the PN532 inside the ACR122U stops looking for cards and starts answering as one; a terminal in whose field it sits selects it and sends APDUs, which the emulator forwards to whatever <span class="m">CardTransport</span> the operator chose. This is the contactless counterpart of what the relay board does on the contact side, and it composes with every card source: the terminal can be made to talk to a physical card in another reader, a card across the network, or a recorded capture.</p>
+
+      <p>The limits of this half matter as much as its capabilities, and they are stated where an operator will read them before trusting a result. One is genuinely the chip's: in target mode the PN532 forces the first UID byte to the random-UID marker, so a terminal that pins a specific card UID will not see the card's own, and no amount of software changes that.</p>
+
+      <p>Two others were reported in earlier revisions of this report as hardware facts, and that was too pessimistic. While the chip performs ISO-DEP, one response must fit one frame and the frame waiting time is the firmware's — so a long response is refused rather than truncated, and a relay that outruns the budget is dropped by the terminal with nothing said. Both are consequences of letting the chip own the block layer. A second driver takes that layer over and answers RATS with an ATS of the platform's own composition: the waiting budget becomes one the platform chose, S(WTX) asks the terminal for more time while the relayed card is still being waited on, and a long response is chained across several blocks (§6.3).</p>
+
+      <p>What remains true under either driver is that relaying costs time that a local card does not. Every APDU is a USB round trip — and, over the Android path, a network round trip as well — so an EMV contactless kernel's transaction budget can still be lost, and a mutation rule that <em>injects</em> extra commands spends that budget twice. Owning the block layer buys room to negotiate rather than exemption. None of this has been exercised against a real terminal; the block arithmetic and relay logic are covered against a fake chip, and the RF behaviour is not and cannot be.</p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <section>
+    <h2><span class="num">10</span>Worked examples</h2>
+    <div class="cols">
+      <h3>10.1 &nbsp;Decoupling a cryptogram from its amount</h3>
+      <p>The clearest demonstration of the cross-layer check combines a command-side edit with a structural one. The PDOL amount is set to one cent, which is what the card is told and what the CVM threshold rules are evaluated against; simultaneously, the amount is removed from CDOL1, so the cryptogram is not bound to any amount at all. The terminal displays and forwards the genuine amount throughout.</p>
+
+      <div class="listing">
+        <div class="lst-title">Listing 1 <span>— the mutation spec, verbatim from a shipped playbook</span></div>
+<pre><span class="c"># PDOL: what the card is told it is worth</span>
+<span class="k">pdol_mutations</span>:
+  - tag:     <span class="f">"9F02"</span>          <span class="c"># Amount, Authorised</span>
+    value:   <span class="f">"000000000001"</span>  <span class="c"># one cent</span>
+    enabled: true
+  - tag:     <span class="f">"5F2A"</span>          <span class="c"># keep it coherent</span>
+    value:   <span class="f">"0978"</span>
+    enabled: true
+
+<span class="c"># CDOL1: what the cryptogram is allowed to cover</span>
+<span class="k">dol_mutations</span>:
+  - target_tag: <span class="f">"8C"</span>         <span class="c"># CDOL1</span>
+    mode:       remove_field
+    field_tag:  <span class="f">"9F02"</span>
+    enabled:    true
+    comment:    <span class="c">"AC not bound to amount"</span></pre>
+      </div>
+
+      <p>Three mechanisms have to cooperate for that to reach the card's decision logic. The CDOL edit shortens a <span class="m">READ&nbsp;RECORD</span> response, so §6.1 restores the negotiated length. The terminal then packs a <span class="m">GENERATE&nbsp;AC</span> one field lighter, so §6.2 re-packs it into the layout the card declared, zero-filling the amount. Only then does the card compute a cryptogram — over a transaction description in which the amount is zero.</p>
+
+      <p>The result is a completed, conformant transaction in which the terminal's belief about the amount and the cryptogram's coverage of it have been severed. Whether that is exploitable is not a card-layer question, which is the point: it is answered one layer up.</p>
+
+      <h3>10.2 &nbsp;Catching it at the switch</h3>
+      <p>The host layer decodes the resulting authorisation and asks the only question that matters. The check is three lines of operator code and reports both copies of the disputed quantity.</p>
+
+      <div class="listing">
+        <div class="lst-title">Listing 2 <span>— the cross-layer check</span></div>
+<pre><span class="k">from</span> host.iso8583 <span class="k">import</span> (
+    de55, load_dialect, unpack)
+
+msg, _ = unpack(load_dialect(<span class="f">"base24"</span>), captured)
+nodes  = de55.from_message(msg)
+
+<span class="k">print</span>(de55.summary(nodes))
+<span class="c"># {'9F26': '4C8B...', '9F27': '80',
+#  '9F36': '015A', '9F34': '1F0302',
+#  '95': '0000000000'}</span>
+
+<span class="k">for</span> d <span class="k">in</span> de55.cross_check(msg):
+    <span class="k">print</span>(d)
+<span class="c"># amount mismatch:
+#   DE4=000000012000
+#   but tag 9F02=000000000001</span></pre>
+      </div>
+
+      <p>That single line of output is the finding, and the full picture is worse than it reads. Three copies of one quantity now disagree: the switch routes and authorises 120.00 from DE4; the ICC data it forwards says one cent; and the cryptogram covers neither, because the amount was removed from the object list that defines its scope. The CVM results byte in the same message reports a verification that was evaluated against the cent.</p>
+
+      <h3>10.3 &nbsp;Determining which copy was signed</h3>
+      <p>Until the platform could derive keys, the previous paragraph ended in an open question. It no longer does. Given the issuer master key for the test range, the verifier derives the card's key from the PAN, derives the session key from the counter, and recomputes the cryptogram over the message as captured.</p>
+
+      <div class="listing">
+        <div class="lst-title">Listing 3 <span>— completing the check</span></div>
+<pre><span class="k">from</span> host.crypto <span class="k">import</span> (
+    derive_udk, load_profile, verify_cryptogram)
+
+card = derive_udk(imk, pan=<span class="f">"4111111111111111"</span>)
+res  = verify_cryptogram(
+    msg, card.udk, load_profile(<span class="f">"emv-book2"</span>))
+
+<span class="k">print</span>(res)
+<span class="c"># ARQC MISMATCH (ATC 015A):
+#   found 4C8B..., computed 91D2...</span>
+
+<span class="k">print</span>(res.data.substituted,
+      res.data.used[<span class="f">"9F02"</span>])
+<span class="c"># ('9F02',)  000000012000
+#  ^ DE55 carried no 9F02, so DE4's copy
+#    was used — and it does not verify.
+#    The card did not sign the amount
+#    the switch is authorising.</span></pre>
+      </div>
+
+      <p>The substitution report is what makes that readable. The builder needed tag <span class="m">9F02</span>, DE55 did not carry one, so the 8583 copy was used as a fallback — and the result does not verify. Had the card signed the routed amount, it would have. The mismatch plus the substitution record together identify <em>which</em> copy carries the card's signature, which is exactly the question §3 defined divergence around.</p>
+
+      <p>The report is careful about what this does not prove. A mismatch is not by itself evidence of forgery: a wrong profile, a wrong key or a missing tag produces an identical failure, and the result object carries enough context to tell those apart. The self-test reports the same limit: it checks that derivation, MACing and response-cryptogram generation are self-consistent and correctly diversified, and then states plainly that it has <em>not</em> checked any profile against a particular scheme's composition, because that composition is confidential and ships only as an editable file. Validate against the target's own test vectors before a verification result goes into a report.</p>
+
+      <h3>10.4 &nbsp;Asking whether the cryptogram is bound to anything</h3>
+      <p>The sharpest host-layer experiment needs no key at all. Take a captured authorisation, rewrite only the volatile routing fields so it looks like a fresh transaction, and leave DE55 exactly as it was — a genuine cryptogram, over a genuine counter, reused under a new trace number.</p>
+
+      <p>An approval is then a finding on its own terms: the host accepted a cryptogram that is not bound to the transaction identity it just authorised. A decline is equally informative and much cheaper to obtain than the alternative, which is why verbatim replay — where most hosts should decline on duplicate detection alone — is the default rather than the interesting mode. The report classifies responses, counts them by code, and states its verdict as a lead to verify rather than a conclusion, on the grounds that approval codes are scheme-specific and a certification host may be configured to approve everything.</p>
+
+      <p>Re-signing turns the same corpus into a different question. With the cryptogram recomputed over the new counter and amount, an approval no longer tells you the host skipped cryptogram checking; it tells you what that host enforces <em>besides</em> the cryptogram.</p>
+
+      <h3>10.5 &nbsp;Walking into an unknown link</h3>
+      <p>Before any of that, an engagement usually starts without an interface specification. Capture first, then let the bytes decide.</p>
+
+      <div class="listing">
+        <div class="lst-title">Listing 4 <span>— dialect inference over a passive capture</span></div>
+<pre><span class="k">from</span> host.iso8583.detect <span class="k">import</span> (
+    detect, describe)
+<span class="k">print</span>(describe(detect(captured_bytes)))
+
+<span class="c">Ranked dialect candidates:
+  1. base24 [2-byte binary, 5-byte TPDU]
+     score=0.95
+     MTI 0100; 6 fields; consumed exactly;
+     framing matches the dialect default
+  2. iso8583-1987 [2-byte binary,
+     5-byte TPDU]  score=0.90
+     MTI 0100; 6 fields; consumed exactly</span></pre>
+      </div>
+
+      <p>Neither candidate scores 1.0, and the gap between them is small — correctly so. These two dialects differ only in private-use fields, which a plain authorisation does not exercise. The output is a ranking with a stated margin, which tells the operator to capture a message that uses fields 60–63 before committing.</p>
+
+      <h3>10.6 &nbsp;The second session on the same product</h3>
+      <p>Finally, the property that only appears over time. In session one, a verification-bypass attempt draws <span class="m">6985</span> from <span class="m">GENERATE&nbsp;AC</span>: the card evaluated the manipulation and refused. The label, the instruction byte and the fingerprint are stored.</p>
+
+      <p>In session two — the same card, or a different card of the same product, on a different bench — the recommender reads that pattern before anything is armed and reorders its output: authentication downgrade and AFL manipulation rank above the verification attack that previously failed, because the recorded refusal is evidence about <em>this capability class</em>, not about that afternoon. An operator who has never seen the card inherits the reasoning of one who has.</p>
+
+      <p>This is P4 in one paragraph: nothing here is a new attack, but the sequence in which attacks are attempted is now derived from evidence rather than from habit, and it improves as the corpus grows.</p>
+    </div>
+
+    <div class="span">
+      <div class="tablewrap">
+        <table>
+          <caption><span class="tbl-label">Table III</span><span class="tbl-title">The shipped attack templates and what each is testing for</span><span class="cap-sub">Each template states a precondition read from the card profile, so the applicable set is derived per card rather than attempted blindly. † marks the four templates that shrink a response and therefore require the T=0 length preservation of §6.1.</span></caption>
+          <thead>
+            <tr><th style="width:8%">Ref</th><th style="width:24%">Template</th><th style="width:30%">Precondition read from the profile</th><th style="width:38%">Divergence it induces</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="m">A-1</td><td>Amount and CVM threshold</td><td><span class="m">9F02</span> in PDOL; a threshold rule in the CVM list</td><td>Card evaluates verification against a value the terminal never showed</td></tr>
+            <tr><td class="m">A-2</td><td>Terminal qualifier rewrite</td><td><span class="m">9F66</span> in PDOL</td><td>Card believes the terminal cannot perform offline verification</td></tr>
+            <tr><td class="m">A-3</td><td>Authentication downgrade</td><td>AIP asserts DDA or CDA</td><td>Terminal believes the card is incapable of dynamic authentication</td></tr>
+            <tr><td class="m">A-4 †</td><td>Force no-CVM</td><td>CVM list contains PIN-only methods</td><td>Terminal believes no verification was required</td></tr>
+            <tr><td class="m">A-5</td><td>Silent data collection</td><td>Always applicable</td><td>None — baseline; obtains counters the terminal never requested</td></tr>
+            <tr><td class="m">A-6</td><td>Issuer action code neutralisation</td><td><span class="m">9F0E</span> present in records</td><td>Terminal believes the card has no offline decline conditions</td></tr>
+            <tr><td class="m">A-7 †</td><td>File locator manipulation</td><td>AIP asserts SDA/DDA and AFL has signed records</td><td>Terminal authenticates a record set the card never intended to sign</td></tr>
+            <tr><td class="m">A-8 †</td><td>Object-list desynchronisation</td><td>CDOL1 contains <span class="m">9F02</span> or <span class="m">9F34</span></td><td>Cryptogram not bound to amount or to verification outcome</td></tr>
+            <tr><td class="m">A-9</td><td>Counter manipulation</td><td>Card echoes <span class="m">9F36</span>/<span class="m">9F13</span> to GET DATA</td><td>Issuer's replay window widened beyond its intent</td></tr>
+            <tr><td class="m">A-10</td><td>Currency and country pairing</td><td><span class="m">5F2A</span> or <span class="m">9F1A</span> in PDOL</td><td>Floor limits and routing evaluated against a fabricated locale</td></tr>
+            <tr><td class="m">A-11 †</td><td>Issuer script suppression</td><td>Online response carries templates <span class="m">71</span>/<span class="m">72</span></td><td>Issuer believes a script (PIN unblock, key update) was delivered</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="span">
+      <div class="tablewrap">
+        <table>
+          <caption><span class="tbl-label">Table IV</span><span class="tbl-title">Host-layer playbooks, and the card-layer counterparts they mirror</span><span class="cap-sub">Written in the same playbook vocabulary as Table III, gated on message type and direction instead of instruction byte. The correspondence is the practical payoff of P2 and P3: an operator's knowledge transfers across the seam.</span></caption>
+          <thead>
+            <tr><th style="width:22%">Playbook</th><th style="width:30%">What it changes</th><th style="width:26%">Question it puts to the host</th><th style="width:22%">Card-layer counterpart</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>amount-mismatch</td><td>Raises DE4, leaves the signed <span class="m">9F02</span> untouched</td><td>Which copy of the amount do you believe?</td><td>A-1 / A-8 (§10.1)</td></tr>
+            <tr><td>atc-replay</td><td>Freezes the counter and last-online counter in DE55</td><td>Do you track counter progression at all?</td><td>A-9, combination E</td></tr>
+            <tr><td>cvm-forgery</td><td>Asserts a successful offline PIN in tag <span class="m">9F34</span></td><td>Do you cross-check the claim against the TVR, the terminal's capabilities and the card's own CVM list?</td><td>A-1 / A-4</td></tr>
+            <tr><td>cryptogram-tamper</td><td>Flips one bit of tag <span class="m">9F26</span></td><td>Is the cryptogram verified at all? — asked with no key material</td><td>—</td></tr>
+            <tr><td>entry-mode-downgrade</td><td>Claims a stripe fallback while DE55 still carries ICC data</td><td>Do you apply the weaker fallback rules — and notice the contradiction?</td><td>A-2 (terminal qualifier)</td></tr>
+            <tr><td>response-tamper</td><td>Turns a decline into an approval on the return leg, leaving tag <span class="m">91</span> alone</td><td>Does anything downstream validate the issuer's proof, or is its decision advisory?</td><td>A-11 (script suppression)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <section>
+    <h2><span class="num">11</span>Safety posture, and its inversion</h2>
+    <div class="cols">
+      <p>An instrument that drives a payment card and can start privileged helpers is itself a target. ATRIUM's own hardening is part of the contribution, because the failure mode it avoids is one this class of tool routinely exhibits.</p>
+
+      <h3>11.1 &nbsp;The card layer: let nothing reach in</h3>
+      <p>The console binds loopback by default, and refuses to bind any other address unless a shared token is configured — there is no login, so widening the bind without authentication would publish a card relay to the network. A <span class="m">Host</span>-header allow-list defeats DNS rebinding, where a malicious page re-resolves its own domain to <span class="m">127.0.0.1</span> and is thereby treated as same-origin; the request still arrives carrying the attacker's name, and is answered <span class="m">421</span>.</p>
+
+      <p>The most consequential decision concerns privilege. The relay board's daemon needs raw USB access, which needs root. The two ways to obtain that from an HTTP handler are a password prompt with nobody present to answer it, or a passwordless <span class="m">sudo</span> rule that quietly converts the API into a root shell for anything that reaches the port. ATRIUM does neither: it launches no subprocess at all. The operator runs the daemon in their own terminal, and the platform <em>detects</em> it by reading <span class="m">/proc</span>, which requires no privilege.</p>
+
+      <p>Because that guarantee is easy to erode later with one convenient commit, it is enforced mechanically: a test walks the module's abstract syntax tree and fails the build if an execution call ever reappears there. A comment mentioning <span class="m">subprocess</span> does not trip it; a call does. The invariant is a property of the repository, not of anyone's memory.</p>
+
+      <h3>11.2 &nbsp;The host layer: constrain what reaches out</h3>
+      <p>The host half inverts the posture, and naming that inversion is the design point. The card-side tool is hardened so that nothing reaches <em>in</em>. A host-side tool reaches <em>out</em> by design — it opens sockets toward an acquirer or a switch — so its hardening is the mirror image, and it arrived in the same commit as the first socket rather than after it.</p>
+
+      <p>Two rules do the work. A <b>target allow-list</b> means the proxy refuses to connect anywhere that was not named up front, and it fails closed in the strongest sense: an empty allow-list permits nothing at all, so the tool cannot transmit until an operator has named a target explicitly. A typo in a hostname is then a refusal rather than a tunnel into something that was never in scope. <b>Test-PAN awareness</b> means an account number outside the configured ranges is the loudest available signal that the link is pointed at production. The check is unconditional; what is configurable is the response, which defaults to warning loudly and can be set to abort. The default is a warning, not a refusal: a false positive that halts a live engagement teaches operators to disable the guard, which is a worse outcome than one that shouts. Well-known documentation test ranges ship as a convenience, with the accompanying note that they are not a substitute for the target's own ranges — which, like the interface specification, come from the host's owner.</p>
+
+      <p>Masking is handled separately and earlier, because policy is not a data-protection control. Account numbers and track data are masked <em>at the point of capture</em>, not on the way out, so the decoded view never holds them in full regardless of what any policy says. The documentation is equally direct about the limit of that: raw wire bytes are retained deliberately — the corpus everything downstream depends on — and the wire carries the account number in the clear. A capture file therefore <em>is</em> cardholder data, is excluded from version control, and can be dropped entirely at the cost of replay and re-decoding. Masking protects the at-a-glance view, not the file, and saying so is worth more than a reassuring sentence.</p>
+
+      <h3>11.3 &nbsp;Ethics and dual use</h3>
+      <p>ATRIUM mints nothing, clones nothing, and recovers no key. Its card-layer half manipulates a session involving a physically present card in a reader the operator controls, which is a meaningful boundary. Its host-layer half is bounded by configuration rather than by physics (§3.2), and a tool which originates authorisation messages is only as safe as the scope it is pointed at — which is why that scope is enforced by the code, declared to the operator, and covered by its own test suite rather than left to discipline.</p>
+
+      <p>The cryptographic layer deserves the same directness. It derives keys from an issuer master key the operator must already possess; it does not recover one, and no capability here brings an operator closer to a key they were not given. Verification is the useful direction — establishing whether what is in a capture was really signed by the card it claims to come from — and re-signing exists so that a replay experiment asks a sharper question, not so that a fabricated transaction looks genuine to a system the operator has no authorisation to touch.</p>
+
+      <p>Four commitments follow. Scheme interface specifications and cryptogram compositions are not shipped, reconstructed or inferred. The card-side evidence store holds no cardholder data by construction (§8.1), and host-side captures are treated as cardholder data because the wire carries it in clear (§11.2). The cardholder-data check is always on, and the target guard fails closed. And findings belong to the parties who can fix them — the issuer, the acquirer, the terminal vendor — through coordinated disclosure, which is the only use of this instrument the authors endorse.</p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <section>
+    <h2><span class="num">12</span>Evaluation</h2>
+    <div class="cols">
+      <p>We evaluate the artifact along three axes and are explicit about the fourth, which is not yet done.</p>
+
+      <h3>12.1 &nbsp;Implementation</h3>
+      <p>The platform is 28,905 lines of Python with no runtime dependency beyond the smart-card, web and DES stacks. On the card side the mutation engine (1,833 lines), structured logger, fingerprinter and agent carry most of the weight, with the intelligence store and the secure link behind them. The contactless subsystem adds roughly 3,400 lines across the PN532 protocol, the ACR122U link, the ISO-DEP block layer, two card-emulation drivers, the contactless, recorded and NFCGate transports, and centralised reader discovery. The host package is about 4,600 lines excluding its tests — replay, the operator CLI, the mutation engine, the proxies, the codec, capture, cryptogram handling and the scoping guard — and ships three dialects, six playbooks and three cryptogram profiles as data.</p>
+
+      <h3>12.2 &nbsp;Correctness validation</h3>
+      <p>787 automated tests pass on Python 3.11 and 3.12 in continuous integration (Table V). The distribution is uneven: the largest suites test the contactless protocol handling, the mutation engine and the platform's own control plane — remote-execution prevention, path traversal, DNS rebinding, bind guards, token enforcement, graceful degradation with no model configured — because those are the code with the highest consequence of failure and the lowest visibility during normal use. The thirteen tests that exercise the contactless drivers require the smart-card library to import and so run in CI while being skipped on a bare checkout; every other test runs everywhere, hardware or not.</p>
+
+      <p>Four suites test properties rather than behaviour. The parity suite runs both TLV implementations over a shared corpus and fails on divergence, keeping a known duplication in step (§7.1). The security suite's AST walk fails the build on a reintroduced execution call (§11.1). The proxy suite runs the passive relay under a deliberately wrong dialect and asserts the far side received the original bytes, which is the only way rung 1's guarantee stays true (§7.3). And the codec's central fixture is assembled from explicit bytes rather than produced by the packer, so a symmetric bug — one that encodes and decodes wrongly in the same direction — cannot pass.</p>
+
+      <p>One negative result belongs here, because it cost the most. Three defects stood between a card that activated and a transaction that completed, all three in the extension of §6.4 rather than in the platform beneath it: an ATR the terminal refused outright, responses discarded inside the firmware without a log, and chunks colliding with the reader on a half-duplex line. Two of the three are the characteristic hazard of adding a state to a mature system — a new protocol path that an older enumeration elsewhere in the firmware did not know to admit. Through all of it the block-layer suite stayed green, because it entered through doors the firmware does not use: the harness enqueued directly onto the transmit queue, past the readiness check the real dispatcher applies, and its chaining test fed one chunk per turn, which is not how the host behaves. A suite can be thorough about a component and still test a path that does not exist in the assembled system. Both entry points are now the dispatcher's own, and a test queues a whole response up front and asserts the card stays silent until the reader asks for the next block.</p>
+
+      <p>The cryptographic suite is joined by a self-test the operator can run, which is unusual in being explicit about its own limits: it establishes that the DES primitive matches a reference implementation and that derivation, MACing and response-cryptogram generation are self-consistent and correctly diversified — and then states that it has <em>not</em> established that any profile matches a particular scheme's composition, because that is confidential and ships only as an editable file.</p>
+
+      <h3>12.3 &nbsp;Expressiveness</h3>
+      <p>Against the four properties: <b>P1</b> is met for the shrinking-mutation class on contact — four of eleven card templates depend on it, and none is runnable on T=0 without it — and now on contactless too, where the same fidelity concern points the other way and is answered by declining an oversized mutation rather than corrupting the frame (§6.3). <b>P2</b> is met at both layers and now extends past protocol structure into cryptography: dialects, mutation playbooks and the data composition a cryptogram covers are all files. <b>P3</b> is met, guarded by the parity suite, and demonstrated rather than asserted — a host playbook and a card combination express the same attack one layer apart in the same vocabulary (Table IV). <b>P4</b> is met at the card layer and remains the property with no analogue in the tooling surveyed in Table I; the host layer's capture corpus is its counterpart, though it is not yet keyed for cross-engagement inference the way the card store is.</p>
+
+      <h3>12.4 &nbsp;What is not evaluated here</h3>
+      <p>The contact relay is the part of the platform with results on hardware, and three configurations are confirmed [15]. A complete EMV transaction runs over native T=1 with the card's own rewritten ATR: application selection, processing options, record reads and both cryptogram exchanges, through to a card decision — the card returns a cryptogram asking to go online, the terminal finds no acquirer and asks again, and the card declines. That is what the same card does inserted directly into the same terminal; reaching a decision is the success condition, not the decision itself. A T=0 card also relays end to end, including the status-word chaining that makes the terminal issue a follow-up read. And a T=1 card can be presented behind a T=0 face, the host converting the response forms as it goes.</p>
+
+      <p>One detail of that transaction is evidence for §6.4. Both cryptogram commands — 35 and 45 bytes — crossed as single blocks, which is only possible if the terminal is acting on the information-field size the rewritten ATR advertises. The rewrite is not merely accepted; it is being read and honoured. The same fact is why reader-to-card chaining remains unexercised: at that advertised size no ordinary EMV command needs it.</p>
+
+      <p>What this is not is a population study. It is one card and one terminal per configuration, which establishes that the relay path works and says nothing about how any product behaves.</p>
+
+      <p>No empirical study against a population of cards, terminals or switches is reported. Such a study requires authorised access to each device under test, and its results are engagement-confidential in most of the settings where it can be run. We state this plainly rather than substituting anecdote: the claims in this report are about what the instrument makes testable, not about what any deployed product does.</p>
+
+      <p>Three specific gaps follow from the newest work. The ISO-DEP driver and the Android transport are the least exercised code in the platform: both are covered only against fakes, and both make claims — that a terminal will grant a waiting extension, that a phone's stack will relay an APDU inside the budget — that only hardware can settle. No cryptogram profile here has been validated against a scheme's own test vectors, so a verification result is a lead requiring confirmation rather than a finding — the platform says so itself. And the replay verdicts have been exercised against test doubles, not certification hosts, so their calibration against real approval behaviour is unmeasured. A protocol for a multi-card, multi-host study — capability-class sampling, per-template precondition filtering, outcome labelling as the dependent variable — is the natural next publication, and the fingerprint scheme of §8.1 was designed to make its results poolable across sites without pooling cardholder data.</p>
+    </div>
+
+    <div class="span">
+      <div class="tablewrap">
+        <table>
+          <caption><span class="tbl-label">Table V</span><span class="tbl-title">Test suite composition</span><span class="cap-sub">787 tests, all passing, on Python 3.11 and 3.12. The thirteen contactless-driver tests need the smart-card library to import and run in CI; the rest run on a bare checkout. Suites marked <em>invariant</em> assert a property of the source tree or of the tool's own behaviour under a wrong assumption, rather than the behaviour of a function.</span></caption>
+          <thead>
+            <tr><th style="width:26%">Suite</th><th class="num" style="width:8%">Tests</th><th style="width:34%">What it establishes</th><th style="width:32%">Kind</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Contactless (PN532 / ACR122U)</td><td class="num">70</td><td>Frame build and parse, pseudo-APDU tunnelling, emulator relay loop, oversize decline, against a fake chip</td><td><b>invariant</b> + behaviour</td></tr>
+            <tr><td>ISO-DEP block layer</td><td class="num">60</td><td>Block parse and build, ATS composition, FWT arithmetic, chaining, S(WTX) accounting</td><td>behaviour</td></tr>
+            <tr><td>Cryptography</td><td class="num">60</td><td>DES primitive against a reference, key and session-key derivation, verification, re-signing, both ARPC methods</td><td>behaviour</td></tr>
+            <tr><td>Host mutation engine</td><td class="num">52</td><td>Six modes over data elements and DE55 tags; the three containment rules; refusal of byte modes on text fields</td><td>behaviour</td></tr>
+            <tr><td>Control plane security</td><td class="num">48</td><td>No privilege escalation, no traversal, no rebinding, token enforcement, degradation without a model</td><td><b>invariant</b> + behaviour</td></tr>
+            <tr><td>Contactless / NFC API</td><td class="num">40</td><td>Emulation and reader endpoints, driver selection, source selection, refusal to relay to the emulating reader</td><td>behaviour</td></tr>
+            <tr><td>NFCGate / Android</td><td class="num">45</td><td>Session protocol against a fake peer, ATS reconstruction and what does not survive it</td><td>behaviour</td></tr>
+            <tr><td>Replay</td><td class="num">35</td><td>Verbatim and freshen modes, field selection, verdict classification, scoping enforcement</td><td>behaviour</td></tr>
+            <tr><td>Reader discovery</td><td class="num">34</td><td>Classification by name and interface marker, default selection avoiding the virtual reader</td><td>behaviour</td></tr>
+            <tr><td>Host API</td><td class="num">27</td><td>Proxy, capture, replay and verify routes wired to the dashboard</td><td>behaviour</td></tr>
+            <tr><td>Scoping guard</td><td class="num">26</td><td>Target allow-list, test-PAN policy, masking of account and track data</td><td>behaviour</td></tr>
+            <tr><td>Outcome store</td><td class="num">25</td><td>Status-word labelling, per-card and cross-card aggregation, recommender ordering</td><td>behaviour</td></tr>
+            <tr><td>Recorded card</td><td class="num">24</td><td>APDU replay from four capture formats; layered matching with every fallback logged</td><td>behaviour</td></tr>
+            <tr><td>TLV parity</td><td class="num">24</td><td>Card-side and host-side TLV agree over a shared corpus including malformed input</td><td><b>invariant</b></td></tr>
+            <tr><td>Capture</td><td class="num">23</td><td>Raw retention, masked decoded view, correlation by trace number rather than arrival order</td><td>behaviour</td></tr>
+            <tr><td>Trace and mutations</td><td class="num">22</td><td>Live-record sink pairing a rule's change with the APDU it changed, direction labelling</td><td>behaviour</td></tr>
+            <tr><td>Secure link</td><td class="num">21</td><td>Certificate pinning, constant-time token comparison, pairing-string round trip, rotation</td><td>behaviour</td></tr>
+            <tr><td>ISO 8583 codec</td><td class="num">20</td><td>Pack/unpack against byte-explicit fixtures; degradation on unknown dialects</td><td>behaviour</td></tr>
+            <tr><td>Framing</td><td class="num">20</td><td>All length-indicator widths and encodings; TPDU presence; incomplete-stream handling</td><td>behaviour</td></tr>
+            <tr><td>Dialect detection</td><td class="num">17</td><td>Ranking, score calibration, refusal to claim certainty</td><td>behaviour</td></tr>
+            <tr><td>Dialect loading</td><td class="num">15</td><td><span class="m">extends:</span> inheritance, field overrides, validation</td><td>behaviour</td></tr>
+            <tr><td>DE55 bridge</td><td class="num">15</td><td>Parse, mutate, re-serialise; amount and currency cross-checks</td><td>behaviour</td></tr>
+            <tr><td>Engine on/off switch</td><td class="num">14</td><td>Arming and disarming preserve every rule; the engine flag is not read as a rule flag</td><td>behaviour</td></tr>
+            <tr><td>Mutating proxy</td><td class="num">13</td><td>Only targeted messages re-encoded; failed re-encode forwards the original</td><td><b>invariant</b> + behaviour</td></tr>
+            <tr><td>Passive proxy</td><td class="num">12</td><td>Byte-exact forwarding under a deliberately wrong dialect; fallback to opaque relay</td><td><b>invariant</b></td></tr>
+            <tr><td>Local transport</td><td class="num">11</td><td>PC/SC backend behind the shared <span class="m">CardTransport</span> interface</td><td>behaviour</td></tr>
+            <tr><td>Session ATR / ATS</td><td class="num">9</td><td>The answer-to-reset readout, and an ATS reported honestly as an ATS</td><td>behaviour</td></tr>
+            <tr><td>Remote relay</td><td class="num">5</td><td>Wire protocol between transport client and card proxy</td><td>behaviour</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <section>
+    <h2><span class="num">13</span>Limitations and roadmap</h2>
+    <div class="cols">
+      <p><b>Contactless is real, and its bounds have moved.</b> The relay reaches the contactless interface as well as contact, which closes what earlier revisions called the single largest scope gap. Two of the three limits those revisions reported as hardware facts turned out to be consequences of letting the chip own the block layer, and taking that layer over retires them (§6.3) — an instructive correction, and a reminder that a limit attributed to hardware deserves a second look before it is written down. What remains: only one reader is supported, the ACR122U; the chip's forced random UID is genuinely out of reach in emulation; and relaying still costs time an EMV kernel's budget may not allow, which S(WTX) can negotiate but not abolish. The chip-managed driver stays the default, so an operator who does not switch still meets the old ceiling. None of this has been exercised against real terminals from the machine that wrote it; the block arithmetic and relay logic are covered against a fake chip, the radio behaviour is not and cannot be without hardware.</p>
+
+      <p><b>The relay layer's error paths are unexercised.</b> The relay keeps its own ledger of this [15], and it is short. The block layer's recovery machinery — resynchronise, abort, error-detection failure — and reader-to-card chaining have only ever run in unit tests, because with the information-field size advertised at its maximum no ordinary EMV command needs chaining and no real exchange has yet produced an error. Two smaller gaps tend to surface as a mystery: the waiting-time extension is implemented and tested but unreachable on the block-protocol path, so a card slower than the terminal's budget is abandoned rather than granted more time; and the block layer borrows the byte-protocol waiting-time counter instead of deriving its own from the ATR. The contactless side gained exactly this negotiation (§6.3) while the contact side still lacks it.</p>
+
+      <p><b>Profiles are unvalidated against scheme vectors.</b> The cryptographic layer computes correctly against itself and against a reference DES implementation, but no shipped composition profile has been checked against a scheme's own test vectors — because those compositions are confidential and are not reconstructed here. A verification result is therefore a lead requiring confirmation against material the target's owner supplies, and the platform's self-test says exactly that rather than letting a green run imply more.</p>
+
+      <p><b>Mutation surrenders byte-exactness.</b> Rung 2 of the ladder can, in principle, corrupt a live link: a codec defect now reaches the wire. The three containment rules confine the exposure to messages a rule actually targeted, and untargeted traffic keeps the full passive guarantee — but the exposure is real, it is the price of the capability, and the recommendation stands: if you do not need to change anything, use the passive proxy.</p>
+
+      <p><b>Fingerprint coarseness.</b> Keying on application identity and capability flags is intentional (§8.1) but coarse: two products with identical capability profiles collide, and a card whose profile changes after issuer scripting will hash differently. Both behaviours are correct for a capability class and wrong for a card identity; the store is only meaningful under the former reading. The host layer has no equivalent key at all — its corpus is per-engagement, so cross-engagement inference is a card-side capability only.</p>
+
+      <p><b>Agent dependence.</b> The agent requires a tool-calling model, and a model that silently ignores tools produces a stalled loop rather than a wrong answer — detected and reported, but still a wasted session. Every conclusion it reaches is reproducible through the deterministic recommender, which is why the agent is optional throughout. It also has no host-layer tools: the ladder is operator-driven.</p>
+
+      <h3>13.1 &nbsp;What is next</h3>
+      <p>All five originally planned phases are complete, so the remaining work is narrower and mostly consists of finishing symmetries the current design implies but does not yet deliver.</p>
+      <ol class="tight">
+        <li><b>Re-signing on the live path.</b> Replay can recompute a cryptogram over a message it has changed; the mutating proxy cannot. Until it can, a live mutation that touches covered data is detectable by any host that verifies — which is sometimes the experiment, and sometimes an accident.</li>
+        <li><b>The second key-derivation option</b>, for cards whose account and sequence numbers do not fit the direct method.</li>
+        <li><b>Extracting the shared core.</b> The TLV duplication is currently held together by the parity suite; a third consumer justifies collapsing both copies into one module and retiring the guard with them.</li>
+        <li><b>Agent tools for the host ladder</b>, so a session can reason across the seam rather than only along the card side of it.</li>
+        <li><b>Empirical validation of both emulation drivers against real terminals</b> — the one part of the platform that cannot be tested without hardware, and now the part carrying the most untested new code. The chaining and S(WTX) arithmetic is covered against a fake chip; whether a given EMV kernel honours a negotiated waiting extension in practice is an open question this report cannot answer.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <section>
+    <h2><span class="num">14</span>Conclusion</h2>
+    <div class="cols">
+      <p>The attacks that have mattered against chip payments were not breaks of cryptography. They were disagreements: about how much, about who was verified, about which application was running — disagreements that every individual layer considered conformant and no single layer was positioned to detect.</p>
+
+      <p>Tooling built one layer at a time cannot test for that, and tooling that starts each engagement empty cannot accumulate the evidence needed to know where to look. This report treats agreement between layers as the property under test, sets out the four properties an instrument needs to test for it, and describes a platform that implements all four: mutations that preserve the invariants a receiver checks before it thinks, targets described as data rather than code, one semantic core spanning the card and the authorisation message, and an evidence store keyed to what a card <em>is</em> rather than to whom it belongs.</p>
+
+      <p>With the host ladder complete, the check now completes. A divergence can be induced at the card boundary, observed as it crosses the authorisation boundary, and — given the key the operator was entrusted with — resolved: <em>this</em> is the copy the card actually signed. The question §3 defined has an answer procedure rather than only a definition, and the same playbook vocabulary expresses the experiment on either side of the seam.</p>
+
+      <p>The smallest piece of it is three bytes of padding. Three bytes of padding inside a template, inserted so a shortened response still matches a length negotiated moments earlier, are the difference between measuring a terminal's byte counter and measuring its policy. The largest piece rhymes with it: a passive proxy that forwards bytes before it tries to understand them, because a guess about someone else's protocol should degrade into silence rather than into a corrupted link. Most of what separates fault injection from noise is that kind of care — and most of what separates a research instrument from a disposable script is whether it remembers what it learned and admits what it does not know.</p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <section>
+    <h2><span class="num">15</span>Reproducibility</h2>
+    <div class="cols">
+      <p>The artifact is public. The measurements in §12 were taken at revision <span class="m">e50d96e</span> and reproduce with:</p>
+      <div class="listing">
+        <div class="lst-title">Listing 5 <span>— reproducing the validation results</span></div>
+<pre>git clone \
+  https://github.com/salmg/elma-pentest
+cd elma-pentest
+pip install -r requirements.txt \
+            -r requirements-dev.txt
+
+python3 -m pytest             <span class="c"># 787 tests</span>
+python3 -m pytest host/tests  <span class="c"># host: 332</span>
+
+<span class="c"># the crypto self-test, and its limits</span>
+python3 -m host.cli selftest</pre>
+      </div>
+      <p>The contact relay is a second repository in the same toolchain: a fork of SimTrace2 [10] tracking upstream 0.8.x with the T=1 block layer and ATR rewrite of §6.4 applied on top. The board must be flashed with the card-emulation application rather than the tracing one, since on this hardware the tracing build is sniffer-only. Because the block layer depends on nothing but the C string library and its own header, its tests build and run on a workstation with no board attached. The companion note [15] carries the build and operating detail, the captured transaction, and the relay's own ledger of what remains unproven.</p>
+
+      <p>No card reader, relay board, model API key or host link is needed for the test suite: the hardware seam is stubbed, the contactless drivers are exercised against a fake chip, the proxy and replay suites run against test doubles on loopback, and the host package imports no smart-card dependency. The thirteen tests that import the smart-card library skip on a bare checkout and run in CI, where it is installed. Continuous integration runs the same command on Python 3.11 and 3.12.</p>
+      <p>One dependency matters: the cryptographic layer needs a DES implementation, so a checkout installed without the root requirements file will see the entire cryptography suite fail on an import error rather than skip.</p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <section>
+    <h2><span class="num"></span>References</h2>
+    <div class="refs">
+      <ol>
+        <li>S. J. Murdoch, S. Drimer, R. Anderson and M. Bond, "Chip and PIN is Broken," <em>IEEE Symposium on Security and Privacy</em>, 2010.</li>
+        <li>M. Roland and J. Langer, "Cloning Credit Cards: A Combined Pre-play and Downgrade Attack on EMV Contactless," <em>USENIX Workshop on Offensive Technologies (WOOT)</em>, 2013.</li>
+        <li>M. Bond, O. Choudary, S. J. Murdoch, S. Skorobogatov and R. Anderson, "Chip and Skim: Cloning EMV Cards with the Pre-play Attack," <em>IEEE Symposium on Security and Privacy</em>, 2014.</li>
+        <li>D. Basin, R. Sasse and J. Toro-Pozo, "The EMV Standard: Break, Fix, Verify," <em>IEEE Symposium on Security and Privacy</em>, 2021.</li>
+        <li>D. Basin, R. Sasse and J. Toro-Pozo, "Card Brand Mixup Attack: Bypassing the PIN in Non-Visa Cards by Using Them for Visa Transactions," <em>USENIX Security Symposium</em>, 2021.</li>
+        <li>M. Emms, B. Arief, L. Freitas, J. Hannon and A. van Moorsel, "Harvesting High Value Foreign Currency Transactions from EMV Contactless Credit Cards Without the PIN," <em>ACM Conference on Computer and Communications Security (CCS)</em>, 2014.</li>
+        <li>J. de Ruiter and E. Poll, "Formal Analysis of the EMV Protocol Suite," <em>Theory of Security and Applications (TOSCA)</em>, 2011.</li>
+        <li>S. Drimer and S. J. Murdoch, "Keep Your Enemies Close: Distance Bounding Against Smartcard Relay Attacks," <em>USENIX Security Symposium</em>, 2007.</li>
+        <li>F. Morgner et al., "Virtual Smart Card Architecture (vsmartcard)," open-source project. [Online]. Available: github.com/frankmorgner/vsmartcard</li>
+        <li>Osmocom, "SIMtrace2 — smart card protocol tracing and emulation hardware and firmware." [Online]. Available: osmocom.org/projects/simtrace2. The contact relay of this work runs on a fork of this firmware and its host tool.</li>
+        <li>EMVCo, <em>EMV Integrated Circuit Card Specifications for Payment Systems</em>, Books 1–4, version 4.4, 2022.</li>
+        <li>ISO/IEC 7816-3 and 7816-4, <em>Identification cards — Integrated circuit cards</em>, International Organization for Standardization.</li>
+        <li>ISO 8583, <em>Financial transaction card originated messages — Interchange message specifications</em>, International Organization for Standardization, 1987 and 2003 editions.</li>
+        <li>S. Mendoza, "Samsung Pay: Tokenized Numbers, Flaws and Issues," <em>Black Hat USA</em>, 2016.</li>
+        <li>S. Mendoza, "Card Relay Internals: activation, the ATR rewrite, and the T=1 block layer," ATRIUM companion note, 2026. Accompanies <span class="m">docs/RELAY-NOTES.md</span> in the relay repository.</li>
+      </ol>
+    </div>
+  </section>
+
+  <div class="colophon">
+    <div>ATRIUM · Technical Report AT&#8209;2026&#8209;01 · revision <span class="m">e50d96e</span></div>
+    <div>Set in Source Serif 4, IBM Plex Sans Condensed and IBM Plex Mono</div>
+    <div>Authorised security research only</div>
+  </div>
+
+</div>

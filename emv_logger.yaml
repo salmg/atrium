@@ -1,0 +1,84 @@
+# emv_logger.yaml – Configuration for emv_logger.py
+#
+# All sections are optional; omitted keys fall back to the built-in defaults.
+# Reload requires restarting the intercept process (no hot-reload).
+
+# ── Output handlers ───────────────────────────────────────────────────────────
+output:
+  # Pretty-printed color console (always-on by default)
+  console: true
+
+  # One JSON file per session written to json_dir on session end
+  json: true
+  json_dir: "logs/sessions"
+
+  # PCSC-style hex log (one APDU per line) – can be replayed with the CLI
+  hexlog: false
+  hexlog_path: "logs/apdu.hexlog"
+
+  # SQLite – sessions + apdus + tlv_nodes tables; writes are async
+  sqlite: false
+  sqlite_path: "logs/emv.db"
+
+
+# ── Console appearance ────────────────────────────────────────────────────────
+console:
+  colors:   true    # ANSI color; set false for piped output / log files
+  show_tlv: true    # inline BER-TLV parse under each APDU
+  show_raw: true    # hex dump of raw APDU bytes
+
+
+# ── Filters ───────────────────────────────────────────────────────────────────
+# All conditions are ANDed.  Empty list = no restriction on that axis.
+filters:
+  # Restrict to one direction.  Options: "terminal→card", "card→terminal"
+  directions: []
+
+  # Only log specific CLA+INS combinations (no space, uppercase).
+  # Example: capture only SELECT and GENERATE AC
+  #   cla_ins: ["00A4", "80AE"]
+  cla_ins: []
+
+  # Only log APDUs whose TLV body contains ALL of these tags.
+  # Example: only log responses that include the Application Cryptogram
+  #   required_tags: ["9F26"]
+  required_tags: []
+
+  # Suppress APDUs whose TLV body contains ANY of these tags.
+  # Example: hide READ RECORD responses that contain raw PAN (tag 5A)
+  #   suppress_tags: ["5A"]
+  suppress_tags: []
+
+
+# ── Mutation hooks ────────────────────────────────────────────────────────────
+# Point at a Python file and function name using the format:
+#   "path/to/hooks.py::function_name"
+#
+# pre_send signature:
+#   def my_pre_send(apdu: bytes, session) -> tuple[str, bytes]:
+#       # Return one of:
+#       #   ("passthrough", b"")          – forward unchanged
+#       #   ("modify",      new_bytes)    – replace command APDU
+#       #   ("drop",        b"")          – suppress; terminal gets 6D 00
+#       #   ("inject",      resp_bytes)   – skip card; terminal gets resp_bytes
+#       return "passthrough", b""
+#
+# pre_response signature:
+#   def my_pre_response(cmd: bytes, response: bytes, session) -> tuple[str, bytes]:
+#       #   ("passthrough", b"")          – forward unchanged
+#       #   ("modify",      new_bytes)    – replace response APDU
+#       #   ("drop",        b"")          – replace with 90 00
+#       #   ("inject",      custom_bytes) – replace with custom_bytes
+#       return "passthrough", b""
+hooks:
+  pre_send:     null    # e.g. "hooks/my_hooks.py::pre_send"
+  pre_response: null    # e.g. "hooks/my_hooks.py::pre_response"
+
+
+# ── Session management ────────────────────────────────────────────────────────
+session:
+  # Start a new session automatically if no APDU seen for this many seconds
+  timeout_seconds: 30
+
+  # Write JSON / SQLite session record automatically on GENERATE AC or timeout
+  auto_save: true

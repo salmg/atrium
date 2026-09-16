@@ -1,0 +1,27 @@
+# ATC freeze — replay and pre-play research.
+#
+# The Application Transaction Counter increments once per transaction and is
+# the issuer's primary defence against replayed cryptograms. Freezing it, and
+# setting Last Online ATC to match so no offline gap appears, tests whether the
+# host tracks counter progression at all.
+#
+# The direct counterpart of ATRIUM's COMBO-E on the card side — same attack,
+# one layer up, expressed in the same playbook vocabulary.
+name: atc-replay
+description: Freeze the ATC and Last Online ATC inside DE55.
+enabled: true
+
+de55_mutations:
+  - tag: "9F36"
+    mode: replace
+    value: "0001"
+    direction: acquirer->issuer
+    on_mti: ["0100", "0200"]
+    comment: "ATC frozen at 0001"
+
+  - tag: "9F13"
+    mode: replace
+    value: "0001"
+    direction: acquirer->issuer
+    on_mti: ["0100", "0200"]
+    comment: "Last Online ATC equal to ATC — issuer sees no offline gap"

@@ -1,0 +1,9 @@
+# Host-layer dependencies.
+#
+# Deliberately short: this half of the toolkit runs on a machine with no card
+# reader, so nothing here needs PC/SC headers or virtualsmartcard. That claim
+# is the reason the package exists separately, and this file is where it is
+# kept honest.
+
+pyyaml>=6.0            # dialects, playbooks, cryptogram profiles
+pycryptodome>=3.18.0   # DES primitive for phase 5 cryptography

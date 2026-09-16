@@ -1,0 +1,19 @@
+# BASE24 (ACI) — the other switch you are most likely to meet.
+#
+# Deltas from the ISO base: terminal-facing links carry a 5-byte TPDU ahead of
+# the MTI, and the private-use fields 60-63 carry BASE24's own structures.
+#
+# Classic BASE24 on a mainframe often speaks EBCDIC; set body_encoding to
+# ebcdic if the capture looks like text with the high bit set.
+extends: iso8583-1987
+name: base24
+
+framing:
+  mli:  {bytes: 2, encoding: binary, includes_self: false}
+  tpdu: {present: true, length: 5}
+
+fields:
+  60: {name: BASE24 POS Terminal Data,    type: ans, length: lllvar, max: 999}
+  61: {name: BASE24 POS Card Issuer Data, type: ans, length: lllvar, max: 999}
+  62: {name: BASE24 Private,              type: ans, length: lllvar, max: 999}
+  63: {name: BASE24 Private,              type: ans, length: lllvar, max: 999}

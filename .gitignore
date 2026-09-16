@@ -1,0 +1,27 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.env
+# logs/ is a working directory — captures land here and stay local.
+logs/*.json
+logs/*.log
+# SQLite card-intel store and its WAL sidecars
+logs/*.db
+logs/*.db-shm
+logs/*.db-wal
+simtrace_config.json
+
+# Host-layer captures. These hold raw wire bytes, so they carry PANs in the
+# clear regardless of how the decoded view is masked. Never commit one.
+logs/*.jsonl
+!logs/.gitkeep
+captures/
+
+# Local virtualenv for running the card layer (pyscard lives here).
+.venv/
+venv/

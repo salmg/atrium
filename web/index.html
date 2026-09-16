@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ATRIUM — Payment Security</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/app.css" />
+  <script src="/static/js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Mobile nav backdrop -->
+  <div class="nav-scrim" id="navScrim"></div>
+
+  <!-- ── Sidebar ─────────────────────────────────────────────────── -->
+  <nav class="sidebar">
+
+    <div class="sidebar-brand">
+      <div class="brand-icon">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="20" height="20">
+          <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2 17l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2 12l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">ATRIUM</span>
+        <span class="brand-sub">Payment Security</span>
+      </div>
+    </div>
+
+    <ul class="nav-links nav-links-top">
+      <li>
+        <a href="#" data-view="home" class="active">
+          <span class="nav-icon">
+            <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
+          </span>
+          <span class="nav-label">Home</span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="nav-section-label">Host Layer</div>
+    <ul class="nav-links">
+      <li>
+        <a href="#" data-view="host">
+          <span class="nav-icon">
+            <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16"><path d="M4 3a2 2 0 00-2 2v2a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm0 8a2 2 0 00-2 2v2a2 2 0 002 2h12a2 2 0 002-2v-2a2 2 0 00-2-2H4zm1 3a1 1 0 112 0 1 1 0 01-2 0zm0-8a1 1 0 112 0 1 1 0 01-2 0z"/></svg>
+          </span>
+          <span class="nav-label">ISO 8583</span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="nav-section-label">Capture</div>
+    <ul class="nav-links">
+      <li>
+        <a href="#" data-view="simtrace">
+          <span class="nav-icon">
+            <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16"><path d="M2 6a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 100 4v2a2 2 0 01-2 2H4a2 2 0 01-2-2v-2a2 2 0 100-4V6z"/></svg>
+          </span>
+          <span class="nav-label">SimTrace2</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" data-view="nfc">
+          <span class="nav-icon">
+            <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16"><path fill-rule="evenodd" d="M10 2a8 8 0 100 16 8 8 0 000-16zM6.7 6.7a1 1 0 011.41 0 2.67 2.67 0 010 3.77 1 1 0 11-1.41-1.41.67.67 0 000-.95 1 1 0 010-1.41zm5.18-1.42a1 1 0 011.42 0 6.67 6.67 0 010 9.44 1 1 0 11-1.42-1.42 4.67 4.67 0 000-6.6 1 1 0 010-1.42zM10 9a1 1 0 011 1v.01a1 1 0 11-2 0V10a1 1 0 011-1z" clip-rule="evenodd"/></svg>
+          </span>
+          <span class="nav-label">Contactless</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" data-view="trace">
+          <span class="nav-icon">
+            <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16"><path d="M3 4a1 1 0 000 2h14a1 1 0 100-2H3zM3 9a1 1 0 000 2h14a1 1 0 100-2H3zM3 14a1 1 0 000 2h8a1 1 0 100-2H3z"/></svg>
+          </span>
+          <span class="nav-label">Live Trace</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" data-view="profile">
+          <span class="nav-icon">
+            <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
+          </span>
+          <span class="nav-label">Card Profile</span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="nav-section-label">Analysis</div>
+    <ul class="nav-links">
+      <li>
+        <a href="#" data-view="mutations">
+          <span class="nav-icon">
+            <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/></svg>
+          </span>
+          <span class="nav-label">Mutations</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" data-view="agent">
+          <span class="nav-icon">
+            <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16"><path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"/><path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"/></svg>
+          </span>
+          <span class="nav-label">AI Agent</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" data-view="intel">
+          <span class="nav-icon">
+            <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"/></svg>
+          </span>
+          <span class="nav-label">Card Intel</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" data-view="playbooks">
+          <span class="nav-icon">
+            <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"/></svg>
+          </span>
+          <span class="nav-label">Playbooks</span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="nav-section-label">System</div>
+    <ul class="nav-links">
+      <li>
+        <a href="#" data-view="logs">
+          <span class="nav-icon">
+            <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"/></svg>
+          </span>
+          <span class="nav-label">Logs</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" data-view="settings">
+          <span class="nav-icon">
+            <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/></svg>
+          </span>
+          <span class="nav-label">Settings</span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <div class="session-card">
+        <div class="status-dot" id="sessionDot"></div>
+        <div class="session-info">
+          <span class="session-label" id="sessionLabel">No session</span>
+          <span class="session-hint">Relay only — no agent required</span>
+        </div>
+      </div>
+      <div class="session-card" id="agentStatusCard" style="display:none">
+        <div class="status-dot agent-dot" id="agentDot"></div>
+        <div class="session-info">
+          <span class="session-label" id="agentLabel">Agent idle</span>
+          <span class="session-hint" id="agentHint">AI research agent</span>
+        </div>
+      </div>
+    </div>
+
+  </nav>
+
+  <!-- ── Main content ──────────────────────────────────────────────── -->
+  <main class="content">
+
+    <!-- ── Topbar ───────────────────────────────────────────────────── -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button id="btnMobileNav" class="icon-btn nav-toggle" aria-label="Toggle navigation">
+          <svg viewBox="0 0 20 20" fill="currentColor" width="18" height="18"><path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/></svg>
+        </button>
+
+        <div class="reader-group">
+          <label class="field-label" for="readerIndex">Reader</label>
+          <select id="readerIndex" title="Auto-selected; the virtual reader is ATRIUM's own output side">
+            <option value="">— detecting —</option>
+          </select>
+          <button id="btnReaderRescan" class="icon-btn" title="Rescan readers" aria-label="Rescan readers">
+            <svg viewBox="0 0 16 16" fill="currentColor" width="13" height="13"><path fill-rule="evenodd" d="M8 3a5 5 0 104.546 2.914.5.5 0 00-.908-.417A4 4 0 118 4v1.5l2-2-2-2V3z" clip-rule="evenodd"/></svg>
+          </button>
+        </div>
+        <span id="readerHint" class="reader-hint"></span>
+
+        <!-- Remote mode toggle -->
+        <div class="remote-group">
+          <label class="toggle-wrap">
+            <input type="checkbox" id="remoteMode" class="toggle-check" />
+            <span class="toggle-track"></span>
+            <span class="toggle-text">Remote</span>
+          </label>
+          <div id="remoteOptions" class="remote-opts" style="display:none">
+            <input type="text" id="remoteLink"
+                   placeholder="atrium1:… pairing string, or host:port over a tunnel"
+                   title="Paste the pairing string from 'atrium pair' on the card host. A plain host:port works too, but only over loopback or an SSH tunnel."
+                   style="width:340px" />
+            <span id="remoteLinkBadge" class="link-badge link-badge--none">no link</span>
+          </div>
+        </div>
+
+        <div class="divider-v"></div>
+        <button id="btnStart" class="btn btn-primary">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="13" height="13"><path d="M8 15A7 7 0 108 1a7 7 0 000 14zm3.857-7.809L6.457 4.23A.5.5 0 006 4.664v6.672a.5.5 0 00.757.429l5.4-2.962a.5.5 0 00-.3-.912z"/></svg>
+          Start Session
+        </button>
+        <button id="btnStop" class="btn btn-danger" disabled>
+          <svg viewBox="0 0 16 16" fill="currentColor" width="13" height="13"><path d="M5 3.5h6A1.5 1.5 0 0112.5 5v6a1.5 1.5 0 01-1.5 1.5H5A1.5 1.5 0 013.5 11V5A1.5 1.5 0 015 3.5z"/></svg>
+          Stop Session
+        </button>
+      </div>
+      <div class="topbar-right">
+        <button id="btnTheme" class="icon-btn theme-toggle" aria-label="Toggle theme" title="Toggle theme">
+          <svg class="theme-icon theme-icon--sun" viewBox="0 0 20 20" fill="currentColor" width="16" height="16"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4.95 2.05a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zm-2.343 5.657a1 1 0 01-1.414 0l-.707-.707a1 1 0 011.414-1.414l.707.707a1 1 0 010 1.414zM10 16a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zm-5.657-.343a1 1 0 010-1.414l.707-.707a1 1 0 111.414 1.414l-.707.707a1 1 0 01-1.414 0zM4 10a1 1 0 01-1 1H2a1 1 0 110-2h1a1 1 0 011 1zm1.05-4.95a1 1 0 011.414 0l.707.707A1 1 0 015.757 7.17l-.707-.707a1 1 0 010-1.414zM10 6a4 4 0 100 8 4 4 0 000-8z" clip-rule="evenodd"/></svg>
+          <svg class="theme-icon theme-icon--moon" viewBox="0 0 20 20" fill="currentColor" width="16" height="16"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/></svg>
+        </button>
+        <span class="atr-tag">ATR</span>
+        <span id="atrDisplay" class="mono atr-value">—</span>
+      </div>
+    </header>
+
+    <!-- ── Home / Mission Control ────────────────────────────────────── -->
+    <div id="view-home" class="view active">
+
+      <div class="view-header">
+        <div class="view-title-group">
+          <h2>Mission Control</h2>
+          <p class="view-desc">EMV relay pipeline — each stage unlocks the next</p>
+        </div>
+        <div class="view-actions">
+          <button id="btnRefreshPipeline" class="btn btn-ghost btn-sm">
+            <svg viewBox="0 0 16 16" fill="currentColor" width="13" height="13"><path fill-rule="evenodd" d="M8 3a5 5 0 104.546 2.914.5.5 0 00-.908-.417A4 4 0 118 4v1.5l2-2-2-2V3z" clip-rule="evenodd"/></svg>
+            Refresh
+          </button>
+        </div>
+      </div>
+
+      <!-- ── KPI strip ─────────────────────────────────────────────── -->
+      <div class="stat-strip">
+        <div class="stat-tile" id="statRelayTile">
+          <div class="stat-head">
+            <span class="stat-label">Relay</span>
+            <span class="stat-dot" id="statRelayDot"></span>
+          </div>
+          <div class="stat-value" id="statRelayValue">Offline</div>
+          <div class="stat-sub" id="statRelaySub">No session</div>
+        </div>
+
+        <div class="stat-tile" id="statCardTile">
+          <div class="stat-head">
+            <span class="stat-label">Card</span>
+            <span class="stat-dot" id="statCardDot"></span>
+          </div>
+          <div class="stat-value" id="statCardValue">—</div>
+          <div class="stat-sub" id="statCardSub">Not fingerprinted</div>
+        </div>
+
+        <div class="stat-tile" id="statMutTile">
+          <div class="stat-head">
+            <span class="stat-label">Mutations</span>
+            <span class="stat-dot" id="statMutDot"></span>
+          </div>
+          <div class="stat-value" id="statMutValue">0</div>
+          <div class="stat-sub" id="statMutSub">No rules armed</div>
+        </div>
+
+        <div class="stat-tile" id="statAgentTile">
+          <div class="stat-head">
+            <span class="stat-label">Agent</span>
+            <span class="stat-dot" id="statAgentDot"></span>
+          </div>
+          <div class="stat-value" id="statAgentValue">Idle</div>
+          <div class="stat-sub" id="statAgentSub">Optional</div>
+        </div>
+      </div>
+
+      <!-- ── Progress stepper ──────────────────────────────────────── -->
+      <ol class="stepper" id="stepper">
+        <li class="stepper-node" role="button" tabindex="0" data-stage="1" data-view="simtrace">
+          <span class="stepper-bead">1</span>
+          <span class="stepper-name">Hardware</span>
+        </li>
+        <li class="stepper-node" role="button" tabindex="0" data-stage="2" data-view="trace">
+          <span class="stepper-bead">2</span>
+          <span class="stepper-name">Session</span>
+        </li>
+        <li class="stepper-node" role="button" tabindex="0" data-stage="3" data-view="profile">
+          <span class="stepper-bead">3</span>
+          <span class="stepper-name">Fingerprint</span>
+        </li>
+        <li class="stepper-node" role="button" tabindex="0" data-stage="4" data-view="playbooks">
+          <span class="stepper-bead">4</span>
+          <span class="stepper-name">Attack</span>
+        </li>
+        <li class="stepper-node" role="button" tabindex="0" data-stage="5" data-view="agent">
+          <span class="stepper-bead">5</span>
+          <span class="stepper-name">Agent</span>
+        </li>
+        <li class="stepper-node" role="button" tabindex="0" data-stage="6" data-view="logs">
+          <span class="stepper-bead">6</span>
+          <span class="stepper-name">Results</span>
+        </li>
+      </ol>
+
+      <!-- ── Stage cards ───────────────────────────────────────────── -->
+      <div class="stage-grid">
+
+        <!-- 1 — Hardware -->
+        <article class="stage-card" id="stage1">
+          <header class="stage-card-head">
+            <span class="stage-badge">1</span>
+            <div class="stage-title-group">
+              <h3 class="stage-title">Hardware</h3>
+              <p class="stage-desc">Connect the SimTrace2 board, start its daemon in a terminal, and pick the reader index.</p>
+            </div>
+            <span class="pill pill--idle" id="stage1Pill">Pending</span>
+          </header>
+          <dl class="stage-readout">
+            <div class="kv"><dt>USB device</dt><dd id="roDevice">—</dd></div>
+            <div class="kv"><dt>Daemon</dt><dd id="roDaemon">Stopped</dd></div>
+            <div class="kv"><dt>Reader index</dt><dd id="roReader">0</dd></div>
+          </dl>
+          <footer class="stage-card-foot">
+            <button class="btn btn-primary btn-sm" data-goto="simtrace">Open SimTrace2</button>
+            <button class="btn btn-ghost btn-sm" data-goto="settings">Configure</button>
+          </footer>
+        </article>
+
+        <!-- 2 — Relay session -->
+        <article class="stage-card" id="stage2">
+          <header class="stage-card-head">
+            <span class="stage-badge">2</span>
+            <div class="stage-title-group">
+              <h3 class="stage-title">Relay Session</h3>
+              <p class="stage-desc">Bridge card and terminal, intercepting every APDU pair live.</p>
+            </div>
+            <span class="pill pill--idle" id="stage2Pill">Pending</span>
+          </header>
+          <dl class="stage-readout">
+            <div class="kv"><dt>Status</dt><dd id="roSession">Stopped</dd></div>
+            <div class="kv kv--wide"><dt>ATR</dt><dd id="roAtr" class="mono">—</dd></div>
+          </dl>
+          <footer class="stage-card-foot">
+            <button class="btn btn-primary btn-sm" id="stageStartBtn">Start Session</button>
+            <button class="btn btn-ghost btn-sm" data-goto="trace">Live Trace</button>
+          </footer>
+        </article>
+
+        <!-- 3 — Fingerprint -->
+        <article class="stage-card" id="stage3">
+          <header class="stage-card-head">
+            <span class="stage-badge">3</span>
+            <div class="stage-title-group">
+              <h3 class="stage-title">Fingerprint</h3>
+              <p class="stage-desc">Extract AIDs, AIP, PDOL tags, service code and CVM list.</p>
+            </div>
+            <span class="pill pill--idle" id="stage3Pill">Pending</span>
+          </header>
+          <dl class="stage-readout">
+            <div class="kv"><dt>Applications</dt><dd id="roAids">—</dd></div>
+            <div class="kv"><dt>Scheme</dt><dd id="roScheme">—</dd></div>
+          </dl>
+          <footer class="stage-card-foot">
+            <button class="btn btn-primary btn-sm" id="stageScanBtn">Scan Card</button>
+            <button class="btn btn-ghost btn-sm" data-goto="profile">Card Profile</button>
+          </footer>
+        </article>
+
+        <!-- 4 — Attack surface -->
+        <article class="stage-card" id="stage4">
+          <header class="stage-card-head">
+            <span class="stage-badge">4</span>
+            <div class="stage-title-group">
+              <h3 class="stage-title">Attack Surface</h3>
+              <p class="stage-desc">Arm mutation rules — CVM bypass, offline auth defeat, DOL rewrites.</p>
+            </div>
+            <span class="pill pill--idle" id="stage4Pill">Pending</span>
+          </header>
+          <dl class="stage-readout">
+            <div class="kv"><dt>Rules armed</dt><dd id="roRules">0</dd></div>
+            <div class="kv"><dt>Engine</dt><dd id="roEngine">Disabled</dd></div>
+          </dl>
+          <footer class="stage-card-foot">
+            <button class="btn btn-primary btn-sm" data-goto="playbooks">Playbooks</button>
+            <button class="btn btn-ghost btn-sm" data-goto="mutations">Mutation Engine</button>
+          </footer>
+        </article>
+
+        <!-- 5 — AI agent -->
+        <article class="stage-card" id="stage5">
+          <header class="stage-card-head">
+            <span class="stage-badge">5</span>
+            <div class="stage-title-group">
+              <h3 class="stage-title">AI Agent</h3>
+              <p class="stage-desc">Let a model probe the card autonomously and report findings.</p>
+            </div>
+            <span class="pill pill--idle" id="stage5Pill">Optional</span>
+          </header>
+          <dl class="stage-readout">
+            <div class="kv"><dt>State</dt><dd id="roAgent">Idle</dd></div>
+            <div class="kv"><dt>Back end</dt><dd id="roBackend">—</dd></div>
+          </dl>
+          <footer class="stage-card-foot">
+            <button class="btn btn-primary btn-sm" data-goto="agent">Open Agent</button>
+          </footer>
+        </article>
+
+        <!-- 6 — Results -->
+        <article class="stage-card" id="stage6">
+          <header class="stage-card-head">
+            <span class="stage-badge">6</span>
+            <div class="stage-title-group">
+              <h3 class="stage-title">Results</h3>
+              <p class="stage-desc">Raw APDU captures, per-card attack history and analyst notes.</p>
+            </div>
+            <span class="pill pill--idle" id="stage6Pill">Pending</span>
+          </header>
+          <dl class="stage-readout">
+            <div class="kv"><dt>Session logs</dt><dd id="roLogs">0</dd></div>
+            <div class="kv"><dt>Known cards</dt><dd id="roCards">0</dd></div>
+          </dl>
+          <footer class="stage-card-foot">
+            <button class="btn btn-primary btn-sm" data-goto="logs">Session Logs</button>
+            <button class="btn btn-ghost btn-sm" data-goto="intel">Card Intel</button>
+          </footer>
+        </article>
+
+      </div><!-- /stage-grid -->
+    </div>
+
+    <!-- ── Live Trace ───────────────────────────────────────────────── -->
+    <div id="view-trace" class="view">
+      <div class="view-header">
+        <div class="view-title-group">
+          <h2>Live APDU Trace</h2>
+          <p class="view-desc">Every APDU pair as it crosses. Rows a mutation rule touched are flagged — click one to see the card's own bytes beside what the terminal was given.</p>
+        </div>
+        <div class="view-actions">
+          <button id="btnClearTrace" class="btn btn-ghost btn-sm">
+            <svg viewBox="0 0 16 16" fill="currentColor" width="13" height="13"><path fill-rule="evenodd" d="M14.5 3a1 1 0 01-1 1H13v9a2 2 0 01-2 2H5a2 2 0 01-2-2V4h-.5a1 1 0 01-1-1V2a1 1 0 011-1H6a1 1 0 011-1h2a1 1 0 011 1h3.5a1 1 0 011 1v1zM4.118 4L4 4.059V13a1 1 0 001 1h6a1 1 0 001-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" clip-rule="evenodd"/></svg>
+            Clear
+          </button>
+        </div>
+      </div>
+      <div class="trace-wrap">
+        <div class="trace-cols">
+          <span class="tc-idx">#</span>
+          <span class="tc-cmd">Command <em class="tc-dir">terminal → card</em></span>
+          <span class="tc-resp">Response <em class="tc-dir">card → terminal</em></span>
+          <span class="tc-sw">SW</span>
+        </div>
+        <div id="traceTable" class="trace-table"></div>
+      </div>
+    </div>
+
+    <!-- ── Card Profile ─────────────────────────────────────────────── -->
+    <div id="view-profile" class="view">
+      <div class="view-header">
+        <div class="view-title-group">
+          <h2>Card Profile</h2>
+          <p class="view-desc">Fingerprinted card capabilities and EMV attributes</p>
+        </div>
+        <div class="view-actions">
+          <span id="scanMsg" class="pb-msg"></span>
+          <button id="btnScanCard" class="btn btn-primary btn-sm">
+            <svg viewBox="0 0 16 16" fill="currentColor" width="13" height="13"><path d="M11.742 10.344a6.5 6.5 0 10-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 001.415-1.414l-3.85-3.85a1.007 1.007 0 00-.115-.099zM12 6.5a5.5 5.5 0 11-11 0 5.5 5.5 0 0111 0z"/></svg>
+            Scan Card
+          </button>
+        </div>
+      </div>
+      <div id="profileContent" class="card-grid"></div>
+    </div>
+
+    <!-- ── Contactless (ACR122U / PN532) ────────────────────────────── -->
+    <div id="view-nfc" class="view">
+      <div class="view-header">
+        <div class="view-title-group">
+          <h2>Contactless</h2>
+          <p class="view-desc">Read a card with one ACR122U and present it to a terminal with another</p>
+        </div>
+        <div class="view-actions">
+          <button id="btnNfcRescan" class="btn btn-ghost btn-sm">
+            <svg viewBox="0 0 16 16" fill="currentColor" width="13" height="13"><path fill-rule="evenodd" d="M8 3a5 5 0 104.546 2.914.5.5 0 00-.908-.417A4 4 0 118 4v1.5l2-2-2-2V3z" clip-rule="evenodd"/></svg>
+            Rescan
+          </button>
+        </div>
+      </div>
+
+      <div class="status-banner" id="nfcHero">
+        <div class="status-banner-dot" id="nfcHeroDot"></div>
+        <div class="status-banner-text">
+          <span class="status-banner-label" id="nfcHeroLabel">No reader</span>
+          <span class="status-banner-sub" id="nfcHeroSub">Plug in an ACR122U and rescan</span>
+        </div>
+      </div>
+
+      <!-- ── Step 1 — the card side ───────────────────────────────────── -->
+      <div class="settings-card nfc-step" id="nfcStep1">
+        <div class="settings-card-header">
+          <div>
+            <div class="settings-card-title"><span class="nfc-step-num">1</span> Where the card is</div>
+            <div class="settings-card-desc" id="nfcStep1Desc">
+              The card being relayed — in a second reader, in a contact slot, on an
+              Android phone running NFCGate, or a recorded capture standing in for one.
+            </div>
+          </div>
+          <div class="settings-card-actions">
+            <button id="btnNfcIdentifyCard" class="btn btn-ghost btn-sm" title="Blink this reader's LED">Identify</button>
+            <button id="btnNfcDetect" class="btn btn-primary btn-sm">Detect card</button>
+          </div>
+        </div>
+
+        <div class="nfc-fields">
+          <div class="proxy-field">
+            <label class="field-label" for="nfcCardSource">Source</label>
+            <select id="nfcCardSource">
+              <option value="local">A card in a reader</option>
+              <option value="file">A recorded capture</option>
+              <option value="remote">A card on another host</option>
+              <option value="nfcgate">A card on an Android phone (NFCGate)</option>
+            </select>
+          </div>
+          <div class="proxy-field" id="nfcCardReaderField">
+            <label class="field-label" for="nfcCardReader">Card reader</label>
+            <select id="nfcCardReader"></select>
+            <span class="text-dim nfc-where" id="nfcCardWhere"></span>
+          </div>
+          <div class="proxy-field" id="nfcCaptureField" style="display:none">
+            <label class="field-label" for="nfcCapture">Capture <span class="text-dim">(from logs/)</span></label>
+            <select id="nfcCapture"></select>
+          </div>
+          <div class="proxy-field" id="nfcStrictField" style="display:none">
+            <label class="field-label" for="nfcStrict">Unmatched commands</label>
+            <select id="nfcStrict">
+              <option value="loose">Answer from the closest recorded response</option>
+              <option value="strict">Answer 6D00 — exact matches only</option>
+            </select>
+          </div>
+          <div class="proxy-field" id="nfcPairingField" style="display:none">
+            <label class="field-label" for="nfcPairing">Pairing string</label>
+            <input id="nfcPairing" type="text" placeholder="atrium1:…" />
+          </div>
+          <div class="proxy-field" id="nfcGateHostField" style="display:none">
+            <label class="field-label" for="nfcGateHost">NFCGate server</label>
+            <input id="nfcGateHost" type="text" value="127.0.0.1" placeholder="host:port" />
+          </div>
+          <div class="proxy-field" id="nfcGateSessionField" style="display:none">
+            <label class="field-label" for="nfcGateSession">Session</label>
+            <input id="nfcGateSession" type="number" min="1" max="255" value="1" />
+            <span class="field-hint">Must match the phone&rsquo;s</span>
+          </div>
+        </div>
+
+        <dl class="stage-readout stage-readout--inline" id="nfcCardReadout">
+          <div class="kv"><dt>UID</dt><dd class="mono" id="nfcUid">—</dd></div>
+          <div class="kv"><dt id="nfcAnswerLabel">ATS</dt><dd class="mono" id="nfcAts">—</dd></div>
+        </dl>
+        <p id="nfcScanMsg" class="pb-msg"></p>
+      </div>
+
+      <!-- ── Step 2 — the emulator side ───────────────────────────────── -->
+      <div class="settings-card nfc-step" id="nfcStep2">
+        <div class="settings-card-header">
+          <div>
+            <div class="settings-card-title"><span class="nfc-step-num">2</span> Which reader presents the card</div>
+            <div class="settings-card-desc">
+              This ACR122U goes into target mode and answers as a card. It cannot also
+              hold the card being relayed, so it is never the same one as step&nbsp;1.
+              Two of the same model? <strong>Identify</strong> blinks the one selected here.
+            </div>
+          </div>
+          <div class="settings-card-actions">
+            <button id="btnNfcIdentifyEmu" class="btn btn-ghost btn-sm" title="Blink this reader's LED">Identify</button>
+            <button id="btnNfcProbe" class="btn btn-ghost btn-sm">Probe chip</button>
+          </div>
+        </div>
+
+        <div class="nfc-fields">
+          <div class="proxy-field">
+            <label class="field-label" for="nfcReader">Emulator reader</label>
+            <select id="nfcReader"></select>
+            <span class="text-dim nfc-where" id="nfcEmuWhere"></span>
+          </div>
+        </div>
+        <pre id="nfcChip" class="term-output term-output--command">Probe to confirm the chip answers.</pre>
+      </div>
+
+      <!-- ── Step 3 — run ─────────────────────────────────────────────── -->
+      <div class="settings-card nfc-step" id="nfcStep3">
+        <div class="settings-card-header">
+          <div>
+            <div class="settings-card-title"><span class="nfc-step-num">3</span> Run</div>
+            <div class="settings-card-desc">
+              Hold the emulator reader to a terminal. Every relayed pair appears in the
+              Live&nbsp;Trace.
+            </div>
+          </div>
+          <div class="settings-card-actions">
+            <button id="btnNfcEmulate" class="btn btn-warning">Start emulation</button>
+            <button id="btnNfcEmulateStop" class="btn btn-ghost" style="display:none">Stop</button>
+          </div>
+        </div>
+
+        <label class="nfc-mutate-row">
+          <input type="checkbox" id="nfcMutate" />
+          <span>
+            <strong>Apply the active playbook</strong>
+            <span class="text-dim" id="nfcMutateHint">— mutations.yaml runs on this relay, same as the contact path</span>
+          </span>
+        </label>
+
+        <label class="nfc-mutate-row">
+          <input type="checkbox" id="nfcPrefetch" />
+          <span>
+            <strong>Read the predictable part in advance</strong>
+            <span class="text-dim">— fetches the PPSE and its applications from
+              the card while waiting for a terminal, and answers those from
+              memory. It is the card's round trip that puts an exchange over
+              the frame waiting time, and these are the exchanges that are
+              identical every time. The trace then shows what the card said a
+              moment earlier for those, rather than right then; everything that
+              depends on what the terminal sent stays live.</span>
+          </span>
+        </label>
+
+        <label class="nfc-mutate-row">
+          <input type="checkbox" id="nfcOwnIsoDep" />
+          <span>
+            <strong>Ask the terminal for more time</strong>
+            <span class="text-dim">— ATRIUM does ISO-DEP itself and sends
+              S(WTX) while the card is answering, which is what keeps a slow
+              relay from being dropped. Also allows long responses to be
+              chained. <strong>On an ACR122U this does not activate</strong>:
+              answering RATS from the host costs a USB round trip against the
+              8.5&nbsp;ms ISO 14443-4 allows, and the reader gives up and asks
+              again. The chip's own layer answers it in firmware. Present the
+              terminal when the reader beeps — it arms for about five seconds
+              at a time.</span>
+          </span>
+        </label>
+
+        <div class="nfc-fields" id="nfcIsoDepFields" style="display:none">
+          <div class="proxy-field">
+            <label class="field-label" for="nfcFwi">Frame waiting time</label>
+            <select id="nfcFwi">
+              <option value="10">FWI 10 — 309 ms</option>
+              <option value="11">FWI 11 — 619 ms</option>
+              <option value="12" selected>FWI 12 — 1.24 s</option>
+              <option value="13">FWI 13 — 2.47 s</option>
+              <option value="14">FWI 14 — 4.95 s (maximum)</option>
+            </select>
+            <span class="field-hint">What the ATS claims before any extension</span>
+          </div>
+          <div class="proxy-field">
+            <label class="field-label" for="nfcWtxm">Each extension asks for</label>
+            <input id="nfcWtxm" type="number" min="1" max="59" value="16" />
+            <span class="field-hint">Frame waiting times per S(WTX), 1&ndash;59</span>
+          </div>
+        </div>
+        <p id="nfcEmuMsg" class="pb-msg"></p>
+      </div>
+
+      <div class="settings-card">
+        <div class="settings-card-header">
+          <div>
+            <div class="settings-card-title">The same thing from a terminal</div>
+            <div class="settings-card-desc">Nothing here needs the dashboard</div>
+          </div>
+        </div>
+        <pre class="term-output term-output--command">python3 atrium.py readers
+python3 atrium.py nfc info
+python3 atrium.py nfc scan
+python3 atrium.py nfc emulate --card-reader 1 --mutate
+python3 atrium.py nfc emulate --from-file logs/apdu.hexlog
+python3 atrium.py nfc emulate --own-isodep --fwi 13 --wtxm 32
+python3 atrium.py readers --details
+python3 atrium.py nfc identify --reader "ACS ACR122U PICC Interface 00 00"</pre>
+      </div>
+    </div>
+
+    <!-- ── Mutations ────────────────────────────────────────────────── -->
+    <div id="view-mutations" class="view">
+      <div class="view-header">
+        <div class="view-title-group">
+          <h2>Mutation Engine</h2>
+          <p class="view-desc">Controlled transaction field manipulation</p>
+        </div>
+        <div class="view-actions">
+          <button id="btnRunMutations" class="btn btn-warning">Run All Mutations</button>
+        </div>
+      </div>
+
+      <!-- Tab bar -->
+      <div class="mut-tabs">
+        <button class="mut-tab mut-tab--active" data-tab="rules">Rules</button>
+        <button class="mut-tab" data-tab="editor">YAML Editor</button>
+        <button class="mut-tab" data-tab="results">Results</button>
+      </div>
+
+      <!-- Rules tab -->
+      <div id="mutTab-rules" class="mut-tab-pane">
+        <div id="mutRules"><span class="text-dim">Loading…</span></div>
+      </div>
+
+      <!-- YAML Editor tab -->
+      <div id="mutTab-editor" class="mut-tab-pane" hidden>
+        <div class="mut-editor-wrap">
+          <textarea id="mutYamlEditor" class="mut-yaml-editor" spellcheck="false"
+            placeholder="# mutations.yaml — edit directly and save"></textarea>
+          <div class="mut-editor-footer">
+            <span id="mutEditorMsg" class="pb-msg"></span>
+            <button id="btnSaveYaml" class="btn btn-primary btn-sm">Save YAML</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results tab -->
+      <div id="mutTab-results" class="mut-tab-pane" hidden>
+        <div id="mutationResults" class="results-list"></div>
+      </div>
+    </div>
+
+    <!-- ── AI Agent ──────────────────────────────────────────────────── -->
+    <div id="view-agent" class="view">
+      <div class="view-header">
+        <div class="view-title-group">
+          <h2>AI Agent</h2>
+          <p class="view-desc">Model-driven research orchestration — Claude, OpenAI, or a local model</p>
+        </div>
+      </div>
+
+      <div class="agent-layout">
+        <!-- Provider availability banner — shown when no model is configured -->
+        <div class="agent-setup" id="agentSetup" hidden>
+          <div class="agent-setup-icon">
+            <svg viewBox="0 0 20 20" fill="currentColor" width="18" height="18"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+          </div>
+          <div class="agent-setup-body">
+            <div class="agent-setup-title" id="agentSetupTitle">No language model configured</div>
+            <pre class="agent-setup-text" id="agentSetupText"></pre>
+          </div>
+        </div>
+
+        <div class="agent-input-row">
+          <textarea id="agentTask" rows="3"
+            placeholder="Describe the research task… e.g. &quot;Analyse CVM bypass vectors for contactless transactions&quot;"></textarea>
+          <div class="agent-btn-group">
+            <button id="btnStartAgent" class="btn btn-primary">
+              <svg viewBox="0 0 16 16" fill="currentColor" width="13" height="13"><path d="M15.964.686a.5.5 0 00-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 00-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 00.886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 00-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z"/></svg>
+              Run Agent
+            </button>
+            <button id="btnStopAgent" class="btn btn-danger" disabled>
+              <svg viewBox="0 0 16 16" fill="currentColor" width="13" height="13"><path d="M5 3.5h6A1.5 1.5 0 0112.5 5v6a1.5 1.5 0 01-1.5 1.5H5A1.5 1.5 0 013.5 11V5A1.5 1.5 0 015 3.5z"/></svg>
+              Stop Agent
+            </button>
+          </div>
+        </div>
+        <div id="agentStatusRow" class="agent-status-row">
+          <div class="status-dot" id="agentViewDot"></div>
+          <span id="agentViewStatus" class="agent-status-text">Idle — relay runs independently, agent is optional</span>
+        </div>
+
+        <!-- Advanced options (collapsible) -->
+        <details class="agent-advanced" id="agentAdvanced">
+          <summary class="agent-advanced-summary">
+            <svg viewBox="0 0 16 16" fill="currentColor" width="13" height="13"><path fill-rule="evenodd" d="M1.5 8a.5.5 0 01.5-.5h12a.5.5 0 010 1H2a.5.5 0 01-.5-.5zm5-5a.5.5 0 01.5-.5h1a.5.5 0 010 1H7a.5.5 0 01-.5-.5zM3 8a.5.5 0 01.5-.5h.5v-3a.5.5 0 011 0v3h.5a.5.5 0 010 1H4a.5.5 0 01-.5-.5zm2.5 5a.5.5 0 01.5-.5h5a.5.5 0 010 1H6a.5.5 0 01-.5-.5z" clip-rule="evenodd"/><path d="M3.5 13a.5.5 0 010-1h.5v-3.5a.5.5 0 011 0V12h.5a.5.5 0 010 1H4a.5.5 0 01-.5 0zm7-10a.5.5 0 010-1H11v3.5a.5.5 0 01-1 0V3h-.5a.5.5 0 010-1H11a.5.5 0 01.5.5zm1 5a.5.5 0 010-1H12a.5.5 0 01.5.5v.5h.5a.5.5 0 010 1h-1a.5.5 0 01-.5-.5V8h-.5z"/></svg>
+            Advanced options
+          </summary>
+          <div class="agent-opts-grid">
+            <div class="agent-opt">
+              <label class="field-label" for="agentProvider">Back end</label>
+              <select id="agentProvider">
+                <option value="">Auto-detect</option>
+              </select>
+            </div>
+            <div class="agent-opt">
+              <label class="field-label" for="agentModel">Model</label>
+              <select id="agentModel">
+                <option value="">Provider default</option>
+              </select>
+              <input type="text" id="agentModelCustom" placeholder="or type a model id…"
+                     style="margin-top:6px;width:100%" />
+            </div>
+            <div class="agent-opt">
+              <label class="field-label">Options</label>
+              <div class="check-group">
+                <label class="check-label">
+                  <input type="checkbox" id="agentBruteSfi" />
+                  Brute-force SFI scan
+                  <span class="opt-hint">Probe all 255 SFI records, not just those in AFL</span>
+                </label>
+              </div>
+            </div>
+            <div class="agent-opt agent-opt-wide">
+              <label class="field-label" for="agentSystemExtra">Extra system context</label>
+              <textarea id="agentSystemExtra" rows="2"
+                placeholder="Additional instructions appended to the agent system prompt…"></textarea>
+            </div>
+          </div>
+        </details>
+
+        <div id="agentLog" class="agent-log"></div>
+      </div>
+    </div>
+
+    <!-- ── Card Intel ────────────────────────────────────────────────── -->
+    <div id="view-intel" class="view">
+      <div class="view-header">
+        <div class="view-title-group">
+          <h2>Card Intelligence</h2>
+          <p class="view-desc">Fingerprinted card history, attack results, and notes</p>
+        </div>
+      </div>
+      <div class="intel-search">
+        <div class="intel-input-wrap">
+          <svg class="intel-icon" viewBox="0 0 20 20" fill="currentColor" width="15" height="15"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/></svg>
+          <input id="intelQuery" type="text" placeholder="Fingerprint hash prefix (or leave blank to list all)" />
+        </div>
+        <button id="btnIntelSearch" class="btn btn-primary">
+          <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/></svg>
+          Look Up
+        </button>
+      </div>
+      <div id="intelResult" class="intel-result"></div>
+    </div>
+
+    <!-- ── Playbooks ────────────────────────────────────────────────── -->
+    <div id="view-playbooks" class="view">
+      <div class="view-header">
+        <div class="view-title-group">
+          <h2>Playbooks</h2>
+          <p class="view-desc">Saved mutation configurations — apply, edit, or create your own</p>
+        </div>
+        <div class="view-actions">
+          <button id="btnNewPlaybook" class="btn btn-primary">
+            <svg viewBox="0 0 16 16" fill="currentColor" width="13" height="13"><path d="M8 4a.5.5 0 01.5.5v3h3a.5.5 0 010 1h-3v3a.5.5 0 01-1 0v-3h-3a.5.5 0 010-1h3v-3A.5.5 0 018 4z"/></svg>
+            New Playbook
+          </button>
+          <button id="btnEditActive" class="btn btn-ghost">
+            <svg viewBox="0 0 16 16" fill="currentColor" width="13" height="13"><path d="M12.854.146a.5.5 0 00-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 000-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 01.5.5v.5h.5a.5.5 0 01.5.5v.5h.5a.5.5 0 01.5.5v.5h.5a.5.5 0 01.5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 016 13.5V13h-.5a.5.5 0 01-.5-.5V12h-.5a.5.5 0 01-.5-.5V11h-.5a.5.5 0 01-.5-.5V10h-.5a.499.499 0 01-.175-.032l-.179.178a.5.5 0 00-.11.168l-2 5a.5.5 0 00.65.65l5-2a.5.5 0 00.168-.11l.178-.178z"/></svg>
+            Edit Active Config
+          </button>
+        </div>
+      </div>
+      <!-- Engine switch: which rules are staged and whether they are applied
+           are different questions, and only the second one has a button. -->
+      <div class="status-banner" id="engineBanner">
+        <div class="status-banner-dot" id="engineDot"></div>
+        <div class="status-banner-text">
+          <span class="status-banner-label" id="engineLabel">Mutation engine</span>
+          <span class="status-banner-sub" id="engineSub">Checking…</span>
+        </div>
+        <div class="status-banner-actions">
+          <button id="btnEngineToggle" class="btn btn-ghost btn-sm">—</button>
+        </div>
+      </div>
+
+      <div class="pb-section">
+        <!-- Which playbook is live is a fact about the whole list, so it sits
+             above the grid. Rendered into it, it consumed a card slot. -->
+        <p id="pbActiveNote" class="text-dim pb-active-note" hidden></p>
+        <div id="playbookList" class="pb-list"></div>
+      </div>
+      <div id="playbookEditorPanel" class="pb-editor-panel" style="display:none">
+        <div class="pb-editor-header">
+          <input id="pbEditorName" type="text" placeholder="Playbook name…" class="pb-name-input" />
+          <div class="pb-editor-actions">
+            <button id="btnSavePb" class="btn btn-primary btn-sm">Save</button>
+            <button id="btnApplyPb" class="btn btn-soft btn-sm">Apply to Active Config</button>
+            <button id="btnDeletePb" class="btn btn-ghost btn-sm" style="display:none">Delete</button>
+            <button id="btnCancelPb" class="btn btn-ghost btn-sm">Cancel</button>
+          </div>
+        </div>
+        <textarea id="pbEditorContent" class="yaml-editor" spellcheck="false"
+                  placeholder="# Paste or write your mutations YAML here&#10;enabled: true&#10;pdol_mutations: []"></textarea>
+        <p id="pbEditorMsg" class="pb-msg"></p>
+      </div>
+    </div>
+
+    <!-- ── Logs ─────────────────────────────────────────────────────── -->
+    <div id="view-logs" class="view">
+      <div class="view-header">
+        <div class="view-title-group">
+          <h2>Session Logs</h2>
+          <p class="view-desc">Browse and inspect captured APDU session log files</p>
+        </div>
+        <div class="view-actions">
+          <button id="btnRefreshLogs" class="btn btn-ghost btn-sm">
+            <svg viewBox="0 0 16 16" fill="currentColor" width="13" height="13"><path fill-rule="evenodd" d="M8 3a5 5 0 104.546 2.914.5.5 0 00-.908-.417A4 4 0 118 4v1.5l2-2-2-2V3z" clip-rule="evenodd"/></svg>
+            Refresh
+          </button>
+        </div>
+      </div>
+      <div class="logs-layout">
+        <div class="log-file-list" id="logFileList">
+          <p class="text-dim" style="padding:8px 0 0">Loading…</p>
+        </div>
+        <div class="log-viewer" id="logViewer">
+          <p class="text-dim log-viewer-hint">Select a file to view its contents</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SimTrace2 ───────────────────────────────────────────────── -->
+    <div id="view-simtrace" class="view">
+      <div class="view-header">
+        <div class="view-title-group">
+          <h2>SimTrace2 Relay</h2>
+          <p class="view-desc">ATRIUM finds the board — you run the daemon yourself in a second terminal</p>
+        </div>
+        <div class="view-actions">
+          <button id="btnSimtraceScan" class="btn btn-ghost btn-sm">
+            <svg viewBox="0 0 16 16" fill="currentColor" width="13" height="13"><path fill-rule="evenodd" d="M8 3a5 5 0 104.546 2.914.5.5 0 00-.908-.417A4 4 0 118 4v1.5l2-2-2-2V3z" clip-rule="evenodd"/></svg>
+            Rescan
+          </button>
+        </div>
+      </div>
+
+      <!-- Status banner -->
+      <div class="status-banner" id="simtraceHero">
+        <div class="status-banner-dot" id="simtraceHeroDot"></div>
+        <div class="status-banner-text">
+          <span class="status-banner-label" id="simtraceHeroLabel">No device</span>
+          <span class="status-banner-sub" id="simtraceHeroSub">Plug in the SimTrace2 board and rescan</span>
+        </div>
+        <div class="status-banner-actions">
+          <select id="simtraceDevice">
+            <option value="">— rescan to detect —</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Run-it-yourself card -->
+      <div class="settings-card" id="simtraceRunCard">
+        <div class="settings-card-header">
+          <div>
+            <div class="settings-card-title">Start the daemon</div>
+            <div class="settings-card-desc">
+              simtrace2-remsim needs raw USB access, so it runs as root. ATRIUM does not
+              launch it — paste this into a second terminal and leave it running.
+            </div>
+          </div>
+          <button id="btnSimtraceCopy" class="btn btn-primary btn-sm">Copy</button>
+        </div>
+        <pre id="simtraceCommand" class="term-output term-output--command">—</pre>
+        <p id="simtraceCommandHint" class="pb-msg"></p>
+
+        <details class="simtrace-udev">
+          <summary>Run it without sudo</summary>
+          <p class="text-dim">
+            A udev rule hands the board to your login session, so the daemon needs no
+            password at all. Write it once, then replug the board:
+          </p>
+          <pre id="simtraceUdev" class="term-output term-output--command">—</pre>
+        </details>
+      </div>
+
+      <!-- Detected daemon -->
+      <div class="settings-card" id="simtraceProcCard">
+        <div class="settings-card-header">
+          <div>
+            <div class="settings-card-title">Detected daemon</div>
+            <div class="settings-card-desc">Found by scanning /proc — ATRIUM never starts or stops it</div>
+          </div>
+        </div>
+        <dl class="stage-readout">
+          <div class="kv"><dt>Process</dt><dd id="simtraceProcPid">Not running</dd></div>
+          <div class="kv"><dt>Running as</dt><dd id="simtraceProcUser">—</dd></div>
+          <div class="kv"><dt>USB path</dt><dd id="simtraceProcUsb">—</dd></div>
+          <div class="kv"><dt>Command</dt><dd id="simtraceProcCmd">—</dd></div>
+        </dl>
+      </div>
+    </div>
+
+    <!-- ── Host layer (ISO 8583) ────────────────────────────────────── -->
+    <div id="view-host" class="view">
+      <div class="view-header">
+        <div class="view-title-group">
+          <h2>ISO 8583 — Host Layer</h2>
+          <p class="view-desc">The link above the card: acquirer ⇄ gateway ⇄ issuer. Meets the card side at DE55.</p>
+        </div>
+        <div class="view-actions">
+          <button id="btnHostRefresh" class="btn btn-ghost btn-sm">Refresh</button>
+        </div>
+      </div>
+
+      <div class="status-banner" id="hostHero">
+        <div class="status-banner-dot" id="hostHeroDot"></div>
+        <div class="status-banner-text">
+          <span class="status-banner-label" id="hostHeroLabel">No link</span>
+          <span class="status-banner-sub" id="hostHeroSub">Start a proxy to observe or rewrite a host link</span>
+        </div>
+      </div>
+
+      <div class="host-tabs" id="hostTabs">
+        <button class="host-tab host-tab--active" data-host-tab="link">Link</button>
+        <button class="host-tab" data-host-tab="captures">Captures</button>
+        <button class="host-tab" data-host-tab="replay">Replay</button>
+        <button class="host-tab" data-host-tab="crypto">Cryptograms</button>
+      </div>
+
+      <!-- Link -->
+      <section class="host-panel host-panel--active" id="hostPanel-link">
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <div>
+              <div class="settings-card-title">Proxy</div>
+              <div class="settings-card-desc">
+                Passive observes and changes nothing. Mutating rewrites live messages per a
+                playbook and asks for confirmation first.
+              </div>
+            </div>
+            <div class="view-actions">
+              <button id="btnHostProxyStart" class="btn btn-primary btn-sm">Start</button>
+              <button id="btnHostProxyStop"  class="btn btn-danger btn-sm" disabled>Stop</button>
+            </div>
+          </div>
+
+          <div class="proxy-controls host-grid">
+            <div class="proxy-field">
+              <label class="field-label" for="hostMode">Mode</label>
+              <select id="hostMode">
+                <option value="passive">Passive — observe only</option>
+                <option value="mutate">Mutating — rewrite in flight</option>
+              </select>
+            </div>
+            <div class="proxy-field">
+              <label class="field-label" for="hostDialect">Dialect</label>
+              <select id="hostDialect"></select>
+            </div>
+            <div class="proxy-field">
+              <label class="field-label" for="hostListen">Listen</label>
+              <input type="text" id="hostListen" value="127.0.0.1:8583" />
+            </div>
+            <div class="proxy-field">
+              <label class="field-label" for="hostTarget">Target</label>
+              <input type="text" id="hostTarget" placeholder="sim.test:5000" />
+            </div>
+            <div class="proxy-field">
+              <label class="field-label" for="hostAllow">Allow-list <span class="text-dim">(required)</span></label>
+              <input type="text" id="hostAllow" placeholder="sim.test:5000, one per comma" />
+            </div>
+            <div class="proxy-field">
+              <label class="field-label" for="hostCapture">Capture file</label>
+              <input type="text" id="hostCapture" placeholder="host.jsonl (in logs/)" />
+            </div>
+            <div class="proxy-field" id="hostPlaybookField" style="display:none">
+              <label class="field-label" for="hostPlaybook">Playbook</label>
+              <select id="hostPlaybook"></select>
+            </div>
+            <div class="proxy-field" style="align-self:flex-end">
+              <label class="check-label">
+                <input type="checkbox" id="hostAbortLivePan" />
+                <span style="margin-left:6px">Stop on a non-test PAN</span>
+              </label>
+            </div>
+          </div>
+
+          <p class="host-warn" id="hostMutateWarn" style="display:none">
+            The mutating proxy re-encodes the messages a rule matches, so a wrong dialect
+            costs a transaction rather than a capture. Everything else is forwarded byte for byte.
+          </p>
+          <p id="hostProxyMsg" class="pb-msg"></p>
+        </div>
+
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <div>
+              <div class="settings-card-title">Live</div>
+              <div class="settings-card-desc">Messages as they cross, newest last</div>
+            </div>
+            <div class="host-counts" id="hostCounts"></div>
+          </div>
+          <pre id="hostLive" class="term-output">No link running.</pre>
+        </div>
+      </section>
+
+      <!-- Captures -->
+      <section class="host-panel" id="hostPanel-captures">
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <div>
+              <div class="settings-card-title">Captures</div>
+              <div class="settings-card-desc">
+                JSONL in <code>logs/</code>. These hold raw wire bytes, so they carry PANs in
+                the clear — they are gitignored for that reason.
+              </div>
+            </div>
+            <button id="btnHostDetect" class="btn btn-ghost btn-sm">Detect dialect</button>
+          </div>
+          <div class="proxy-controls">
+            <div class="proxy-field" style="flex:1">
+              <label class="field-label" for="hostCapturePick">File</label>
+              <select id="hostCapturePick"></select>
+            </div>
+          </div>
+          <pre id="hostCaptureView" class="term-output">Select a capture.</pre>
+        </div>
+      </section>
+
+      <!-- Replay -->
+      <section class="host-panel" id="hostPanel-replay">
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <div>
+              <div class="settings-card-title">Replay</div>
+              <div class="settings-card-desc">
+                Originates transactions from a capture, with no acquirer in front.
+              </div>
+            </div>
+            <button id="btnHostReplay" class="btn btn-primary btn-sm">Run replay</button>
+          </div>
+          <div class="proxy-controls host-grid">
+            <div class="proxy-field">
+              <label class="field-label" for="hostReplayCapture">Corpus</label>
+              <select id="hostReplayCapture"></select>
+            </div>
+            <div class="proxy-field">
+              <label class="field-label" for="hostReplayTarget">Target</label>
+              <input type="text" id="hostReplayTarget" placeholder="sim.test:5000" />
+            </div>
+            <div class="proxy-field">
+              <label class="field-label" for="hostReplayAllow">Allow-list <span class="text-dim">(required)</span></label>
+              <input type="text" id="hostReplayAllow" placeholder="sim.test:5000" />
+            </div>
+            <div class="proxy-field">
+              <label class="field-label" for="hostReplayPlaybook">Playbook <span class="text-dim">(optional)</span></label>
+              <select id="hostReplayPlaybook"></select>
+            </div>
+            <div class="proxy-field" style="align-self:flex-end">
+              <label class="check-label">
+                <input type="checkbox" id="hostFreshen" />
+                <span style="margin-left:6px">Freshen routing fields</span>
+              </label>
+            </div>
+            <div class="proxy-field" style="align-self:flex-end">
+              <label class="check-label">
+                <input type="checkbox" id="hostResign" />
+                <span style="margin-left:6px">Re-sign the ARQC</span>
+              </label>
+            </div>
+          </div>
+          <p class="host-warn" id="hostReplayWarn">
+            Verbatim asks whether the host detects duplicates. Freshening rewrites STAN, RRN and
+            the date-times but never DE55 — reusing the captured cryptogram is the experiment.
+          </p>
+          <pre id="hostReplayOut" class="term-output">No replay has been run.</pre>
+        </div>
+      </section>
+
+      <!-- Cryptograms -->
+      <section class="host-panel" id="hostPanel-crypto">
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <div>
+              <div class="settings-card-title">Cryptogram verification</div>
+              <div class="settings-card-desc">
+                Were the ARQCs in this capture really signed by the card they claim to come from?
+              </div>
+            </div>
+            <button id="btnHostVerify" class="btn btn-primary btn-sm">Verify</button>
+          </div>
+          <div class="proxy-controls host-grid">
+            <div class="proxy-field">
+              <label class="field-label" for="hostVerifyCapture">Capture</label>
+              <select id="hostVerifyCapture"></select>
+            </div>
+            <div class="proxy-field">
+              <label class="field-label" for="hostProfile">Profile</label>
+              <select id="hostProfile"></select>
+            </div>
+            <div class="proxy-field">
+              <label class="field-label" for="hostPsn">PSN</label>
+              <input type="text" id="hostPsn" value="00" style="max-width:80px" />
+            </div>
+          </div>
+          <p class="host-warn" id="hostImkWarn"></p>
+          <pre id="hostVerifyOut" class="term-output">No verification has been run.</pre>
+        </div>
+      </section>
+    </div>
+
+    <!-- ── Settings ─────────────────────────────────────────────────── -->
+    <div id="view-settings" class="view">
+      <div class="view-header">
+        <div class="view-title-group">
+          <h2>Settings</h2>
+          <p class="view-desc">Appearance, logger configuration, remote proxy, and SimTrace2 binary path</p>
+        </div>
+      </div>
+
+      <!-- Appearance card -->
+      <div class="settings-card">
+        <div class="settings-card-header">
+          <div>
+            <div class="settings-card-title">Appearance</div>
+            <div class="settings-card-desc">Colour theme — "System" follows your operating system preference</div>
+          </div>
+        </div>
+        <div class="theme-picker" id="themePicker">
+          <button class="theme-opt" data-theme-choice="light">
+            <span class="theme-swatch theme-swatch--light"></span>
+            <span class="theme-opt-name">Light</span>
+          </button>
+          <button class="theme-opt" data-theme-choice="dark">
+            <span class="theme-swatch theme-swatch--dark"></span>
+            <span class="theme-opt-name">Dark</span>
+          </button>
+          <button class="theme-opt" data-theme-choice="system">
+            <span class="theme-swatch theme-swatch--system"></span>
+            <span class="theme-opt-name">System</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Logger config card -->
+      <div class="settings-card">
+        <div class="settings-card-header">
+          <div>
+            <div class="settings-card-title">Logger Configuration</div>
+            <div class="settings-card-desc">emv_logger.yaml — output handlers, filters, mutation hooks, session timeouts</div>
+          </div>
+          <button id="btnSaveLogger" class="btn btn-primary btn-sm">Save Changes</button>
+        </div>
+        <textarea id="loggerConfigContent" class="yaml-editor" spellcheck="false"></textarea>
+        <p id="loggerConfigMsg" class="pb-msg"></p>
+      </div>
+
+      <!-- Remote proxy card -->
+      <div class="settings-card">
+        <div class="settings-card-header">
+          <div>
+            <div class="settings-card-title">Remote Card Proxy</div>
+            <div class="settings-card-desc">Run the proxy server on this machine so a remote ATRIUM instance can relay to this reader</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <div class="proxy-status-dot" id="proxyDot"></div>
+            <span id="proxyStatusLabel" class="field-label">Stopped</span>
+          </div>
+        </div>
+        <div class="proxy-controls">
+          <div class="proxy-field">
+            <label class="field-label" for="proxyHost">Listen host</label>
+            <input type="text" id="proxyHost" value="0.0.0.0" />
+          </div>
+          <div class="proxy-field">
+            <label class="field-label" for="proxyPort">Port</label>
+            <input type="number" id="proxyPort" value="7654" style="width:80px" />
+          </div>
+          <div class="proxy-field">
+            <label class="field-label" for="proxyReader">Reader</label>
+            <input type="number" id="proxyReader" value="0" style="width:56px" />
+          </div>
+          <div class="proxy-actions">
+            <button id="btnProxyStart" class="btn btn-primary">Start Proxy</button>
+            <button id="btnProxyStop"  class="btn btn-danger" disabled>Stop Proxy</button>
+          </div>
+        </div>
+        <pre id="proxyOutput" class="proxy-output"></pre>
+      </div>
+
+      <!-- SimTrace2 command hint (display only — ATRIUM never runs the daemon) -->
+      <div class="settings-card">
+        <div class="settings-card-header">
+          <div>
+            <div class="settings-card-title">SimTrace2 Command</div>
+            <div class="settings-card-desc">Shapes the line shown on the <a href="#" data-view="simtrace" style="color:var(--accent)">SimTrace2 view</a> for you to paste into a root terminal. ATRIUM never executes it, so this path is a display hint — leave it blank to auto-detect.</div>
+          </div>
+          <button id="btnSaveSimtraceConfig" class="btn btn-primary btn-sm">Save</button>
+        </div>
+        <div class="proxy-controls">
+          <div class="proxy-field" style="flex:1">
+            <label class="field-label" for="simtraceBinaryPath">Binary path</label>
+            <input type="text" id="simtraceBinaryPath" placeholder="auto-detect from $PATH and the usual build trees" style="width:100%" />
+          </div>
+          <div class="proxy-field" style="align-self:flex-end">
+            <label class="check-label">
+              <input type="checkbox" id="simtraceSudo" checked />
+              <span style="margin-left:6px">Prefix with sudo</span>
+            </label>
+          </div>
+        </div>
+        <p id="simtraceConfigMsg" class="pb-msg"></p>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="/static/js/app.js"></script>
+  <script src="/static/js/home.js"></script>
+  <script src="/static/js/trace.js"></script>
+  <script src="/static/js/profile.js"></script>
+  <script src="/static/js/mutations.js"></script>
+  <script src="/static/js/agent.js"></script>
+  <script src="/static/js/intel.js"></script>
+  <script src="/static/js/playbooks.js"></script>
+  <script src="/static/js/logs.js"></script>
+  <script src="/static/js/settings.js"></script>
+  <script src="/static/js/simtrace.js"></script>
+  <script src="/static/js/host.js"></script>
+  <script src="/static/js/nfc.js"></script>
+  <script src="/static/js/readers.js"></script>
+</body>
+</html>

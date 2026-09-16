@@ -1,0 +1,20 @@
+# Cryptogram tamper — does the host verify the ARQC at all?
+#
+# The most fundamental question you can ask an authoriser, and one that needs
+# no key material to ask: flip a single bit in the Application Cryptogram and
+# see whether the transaction still approves.
+#
+# Any approval here is a finding on its own. It means ARQC verification is
+# absent, misconfigured, or failing open — and every other cryptographic
+# control at this layer rests on it.
+name: cryptogram-tamper
+description: Flip one bit of tag 9F26 and observe whether the host still approves.
+enabled: true
+
+de55_mutations:
+  - tag: "9F26"
+    mode: flip_bit
+    bit_position: 0
+    direction: acquirer->issuer
+    on_mti: ["0100", "0200"]
+    comment: "Single bit flipped in the Application Cryptogram"

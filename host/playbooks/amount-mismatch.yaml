@@ -1,0 +1,20 @@
+# Amount mismatch — DE4 disagrees with the amount the cryptogram covers.
+#
+# The amount appears twice in an authorisation: as DE4, which the switch routes
+# and authorises on, and as tag 9F02 inside DE55, which the ARQC is computed
+# over. Raising DE4 after the card signed 9F02 asks the single most useful
+# question at this layer: which copy does the far side actually believe?
+#
+# A host that approves 99.99 against a cryptogram covering 10.00 is authorising
+# an amount the cardholder never approved.
+name: amount-mismatch
+description: Raise DE4 while leaving the cryptogram's own amount untouched.
+enabled: true
+
+field_mutations:
+  - de: 4
+    mode: replace
+    value: "000000009999"
+    direction: acquirer->issuer
+    on_mti: ["0100", "0200"]
+    comment: "DE4 -> 99.99; tag 9F02 still carries the signed amount"

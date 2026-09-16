@@ -1,0 +1,76 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install system dependencies
+        # pyscard needs the PC/SC headers to build. No reader is present on the
+        # runner, which is fine: the suite stubs the hardware seam.
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends libpcsclite-dev swig
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt -r requirements-dev.txt
+
+      - name: Run tests
+        run: python -m pytest -q
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Byte-compile every module
+        # Catches syntax errors in files no test imports.
+        run: python -m compileall -q atrium.py api/ core/ host/ nfc/ nfcgate/ tests/ tools/ transport/ *.py
+
+      - name: Check for dead imports and names
+        # compileall catches syntax errors; this catches the quieter kind —
+        # imports left behind by a refactor, and names that are never assigned.
+        run: |
+          pip install pyflakes
+          python -m pyflakes atrium.py api/ core/ host/ nfc/ nfcgate/ tests/ tools/ transport/
+
+      - name: Check JavaScript parses
+        run: |
+          for f in web/js/*.js; do node --check "$f" || exit 1; done
+
+      - name: Verify README links resolve
+        run: |
+          python - <<'PY'
+          import re, pathlib, sys
+          t = pathlib.Path("README.md").read_text()
+          heads = {re.sub(r"[^\w\s-]", "", m.group(1).strip().lower()).replace(" ", "-")
+                   for m in re.finditer(r"^#{2,4}\s+(.+)$", t, re.M)}
+          bad = [a for a in re.findall(r"\]\(#([^)]+)\)", t) if a not in heads]
+          if t.count("```") % 2:
+              print("Unbalanced code fences in README"); sys.exit(1)
+          if bad:
+              print("Broken README anchors:", bad); sys.exit(1)
+          print("README ok")
+          PY

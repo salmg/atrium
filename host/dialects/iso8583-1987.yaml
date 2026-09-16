@@ -1,0 +1,82 @@
+# ISO 8583:1987 — the common ancestor.
+#
+# Most real deployments are this table plus a handful of private-use fields, so
+# other dialects `extends: iso8583-1987` and override only what differs.
+#
+# Defaults chosen to match the most common deployment: 2-byte binary length
+# prefix that excludes itself, ASCII MTI, binary bitmap, packed-BCD numerics.
+name: iso8583-1987
+
+framing:
+  mli:  {bytes: 2, encoding: binary, includes_self: false}
+  tpdu: {present: false, length: 5}
+
+body_encoding: ascii        # ascii | ebcdic
+numeric_encoding: bcd       # default for type-n fields
+length_encoding: bcd        # default for variable-length prefixes
+
+mti:    {encoding: ascii}   # ascii | bcd
+bitmap: {encoding: binary}  # binary | hex
+
+fields:
+  2:   {name: Primary Account Number,      type: n,   length: llvar,  max: 19}
+  3:   {name: Processing Code,             type: n,   length: 6}
+  4:   {name: Amount Transaction,          type: n,   length: 12}
+  5:   {name: Amount Settlement,           type: n,   length: 12}
+  6:   {name: Amount Cardholder Billing,   type: n,   length: 12}
+  7:   {name: Transmission Date Time,      type: n,   length: 10}
+  9:   {name: Conversion Rate Settlement,  type: n,   length: 8}
+  10:  {name: Conversion Rate Billing,     type: n,   length: 8}
+  11:  {name: Systems Trace Audit Number,  type: n,   length: 6}
+  12:  {name: Time Local Transaction,      type: n,   length: 6}
+  13:  {name: Date Local Transaction,      type: n,   length: 4}
+  14:  {name: Date Expiration,             type: n,   length: 4}
+  15:  {name: Date Settlement,             type: n,   length: 4}
+  18:  {name: Merchant Type,               type: n,   length: 4}
+  19:  {name: Acquiring Country Code,      type: n,   length: 3}
+  22:  {name: POS Entry Mode,              type: n,   length: 3}
+  23:  {name: Card Sequence Number,        type: n,   length: 3}
+  25:  {name: POS Condition Code,          type: n,   length: 2}
+  26:  {name: POS PIN Capture Code,        type: n,   length: 2}
+  28:  {name: Amount Transaction Fee,      type: an,  length: 9}
+  32:  {name: Acquiring Institution ID,    type: n,   length: llvar,  max: 11}
+  33:  {name: Forwarding Institution ID,   type: n,   length: llvar,  max: 11}
+  35:  {name: Track 2 Data,                type: z,   length: llvar,  max: 37}
+  36:  {name: Track 3 Data,                type: z,   length: lllvar, max: 104}
+  37:  {name: Retrieval Reference Number,  type: an,  length: 12}
+  38:  {name: Authorization ID Response,   type: an,  length: 6}
+  39:  {name: Response Code,               type: an,  length: 2}
+  41:  {name: Card Acceptor Terminal ID,   type: ans, length: 8}
+  42:  {name: Card Acceptor ID Code,       type: ans, length: 15}
+  43:  {name: Card Acceptor Name Location, type: ans, length: 40}
+  44:  {name: Additional Response Data,    type: ans, length: llvar,  max: 25}
+  45:  {name: Track 1 Data,                type: ans, length: llvar,  max: 76}
+  48:  {name: Additional Data Private,     type: ans, length: lllvar, max: 999}
+  49:  {name: Currency Code Transaction,   type: n,   length: 3}
+  50:  {name: Currency Code Settlement,    type: n,   length: 3}
+  51:  {name: Currency Code Billing,       type: n,   length: 3}
+  52:  {name: PIN Data,                    type: b,   length: 8}
+  53:  {name: Security Related Control,    type: n,   length: 16}
+  54:  {name: Additional Amounts,          type: an,  length: lllvar, max: 120}
+  # Field 55 is the bridge to the card layer: BER-TLV ICC data, parsed and
+  # mutated by the same core ATRIUM uses on card responses.
+  55:  {name: ICC Data,                    type: b,   length: lllvar, max: 999, codec: ber_tlv}
+  56:  {name: Reserved ISO,                type: ans, length: lllvar, max: 999}
+  57:  {name: Reserved National,           type: ans, length: lllvar, max: 999}
+  58:  {name: Reserved National,           type: ans, length: lllvar, max: 999}
+  59:  {name: Reserved National,           type: ans, length: lllvar, max: 999}
+  60:  {name: Reserved Private,            type: ans, length: lllvar, max: 999}
+  61:  {name: Reserved Private,            type: ans, length: lllvar, max: 999}
+  62:  {name: Reserved Private,            type: ans, length: lllvar, max: 999}
+  63:  {name: Reserved Private,            type: ans, length: lllvar, max: 999}
+  70:  {name: Network Management Code,     type: n,   length: 3}
+  90:  {name: Original Data Elements,      type: n,   length: 42}
+  95:  {name: Replacement Amounts,         type: an,  length: 42}
+  100: {name: Receiving Institution ID,    type: n,   length: llvar,  max: 11}
+  102: {name: Account Identification 1,    type: ans, length: llvar,  max: 28}
+  103: {name: Account Identification 2,    type: ans, length: llvar,  max: 28}
+  120: {name: Reserved Private,            type: ans, length: lllvar, max: 999}
+  121: {name: Reserved Private,            type: ans, length: lllvar, max: 999}
+  122: {name: Reserved Private,            type: ans, length: lllvar, max: 999}
+  123: {name: Reserved Private,            type: ans, length: lllvar, max: 999}
+  128: {name: Message Authentication Code, type: b,   length: 8}

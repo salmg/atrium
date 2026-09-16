@@ -1,0 +1,25 @@
+# EMV Book 2 — the recommended minimum data for an Application Cryptogram.
+#
+# EMV 4.3 Book 2 §8.1.1 lists these as the minimum set a card should include in
+# the AC data, in this order. Many real implementations use exactly this; many
+# others append issuer-specific data or reorder it, which is why this is a file
+# rather than a constant.
+#
+# If verification fails against a card you believe is genuine, the profile is
+# the first thing to doubt — not the key.
+name: emv-book2
+description: The EMV Book 2 recommended minimum AC data, in specification order.
+session_key: csk
+padding: iso9797-2
+
+tags:
+  - "9F02"   # Amount, Authorised
+  - "9F03"   # Amount, Other
+  - "9F1A"   # Terminal Country Code
+  - "95"     # Terminal Verification Results
+  - "5F2A"   # Transaction Currency Code
+  - "9A"     # Transaction Date
+  - "9C"     # Transaction Type
+  - "9F37"   # Unpredictable Number
+  - "82"     # Application Interchange Profile
+  - "9F36"   # Application Transaction Counter

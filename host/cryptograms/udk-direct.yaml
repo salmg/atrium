@@ -1,0 +1,21 @@
+# Book 2 minimum data, MACed directly under the UDK with no session key.
+#
+# Older schemes sign the AC under the card key itself rather than deriving a
+# per-transaction session key. Worth trying when a profile verifies nothing and
+# the ATC looks like it is not participating in the derivation.
+name: udk-direct
+description: Book 2 data with no session-key derivation — MACed under the UDK.
+session_key: none
+padding: iso9797-2
+
+tags:
+  - "9F02"
+  - "9F03"
+  - "9F1A"
+  - "95"
+  - "5F2A"
+  - "9A"
+  - "9C"
+  - "9F37"
+  - "82"
+  - "9F36"

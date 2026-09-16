@@ -1,0 +1,22 @@
+# EMV Book 2 minimum data with the Issuer Application Data appended.
+#
+# The common variation: the same ordered set, followed by tag 9F10. Schemes
+# that carry a CVR inside the IAD need it in the MAC, so this is worth trying
+# second when the plain Book 2 profile does not verify.
+name: emv-book2-iad
+description: Book 2 minimum data followed by the Issuer Application Data (9F10).
+session_key: csk
+padding: iso9797-2
+
+tags:
+  - "9F02"
+  - "9F03"
+  - "9F1A"
+  - "95"
+  - "5F2A"
+  - "9A"
+  - "9C"
+  - "9F37"
+  - "82"
+  - "9F36"
+  - "9F10"   # Issuer Application Data

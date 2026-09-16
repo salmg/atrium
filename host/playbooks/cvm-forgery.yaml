@@ -1,0 +1,20 @@
+# CVM forgery — claim the cardholder was verified when they were not.
+#
+# Tag 9F34 reports how the cardholder was verified and whether it succeeded.
+# Asserting a successful offline PIN tests whether the host cross-checks the
+# claim against the TVR, the terminal's capabilities, and the card's own CVM
+# list — or simply takes the terminal's word for it.
+#
+# Byte 1 is the CVM performed (01 = plaintext PIN by ICC), byte 2 the condition,
+# byte 3 the result (02 = successful).
+name: cvm-forgery
+description: Assert a successful offline PIN verification in tag 9F34.
+enabled: true
+
+de55_mutations:
+  - tag: "9F34"
+    mode: replace
+    value: "010002"
+    direction: acquirer->issuer
+    on_mti: ["0100", "0200"]
+    comment: "9F34 -> plaintext PIN by ICC, successful"

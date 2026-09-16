@@ -1,0 +1,23 @@
+# COMBO-D — AFL truncate + CDOL field removal
+# Truncates AFL to 1 entry (drops CVM/risk records) and removes CDOL2 entirely
+enabled: true
+log_mutations: true
+log_path: "logs/mutations.jsonl"
+
+pdol_mutations: []
+
+afl_mutations:
+  - mode:        truncate
+    truncate_to: 1
+    enabled:     true
+    comment:     "AFL: truncate to 1 entry — suppress CVM list and risk data records"
+
+dol_mutations: []
+
+response_mutations:
+  - tag:     "8D"
+    mode:    delete
+    enabled: true
+    comment: "CDOL2: delete — suppresses second GENERATE AC / issuer script processing"
+
+injected_commands: []

