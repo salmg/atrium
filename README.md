@@ -1159,8 +1159,8 @@ sudo dnf install -y pcscd pcsc-lite-devel python3 python3-pip swig \
 ### Step 3: Clone the repo
 
 ```bash
-git clone https://github.com/salmg/elma-pentest.git
-cd elma-pentest
+git clone https://github.com/salmg/atrium.git
+cd atrium
 ```
 
 ---
@@ -1638,7 +1638,7 @@ forwards over the pinned TLS link; every layer above is unaware:
 ### Package layout
 
 ```
-elma-pentest/
+atrium/
 │
 ├── atrium.py               ← entry point (serve | relay | agent | pair | proxy | all)
 ├── card_proxy.py           ← remote card proxy server
